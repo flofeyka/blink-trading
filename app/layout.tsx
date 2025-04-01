@@ -1,5 +1,6 @@
+import Header from "@/components/shared/Header";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Montserrat } from "next/font/google";
+import { Geist, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,7 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-medium ${geistMono.variable} `}>{children}</body>
+      <body className={`font-medium ${geistMono.variable}`}>
+        <div className="h-screen w-screen bg-[#181818]">
+          <header>
+            <Header />
+          </header>
+          <main className="px-10 mt-10 max-md:px-5">{children}</main>
+        </div>
+      </body>
     </html>
   );
 }
