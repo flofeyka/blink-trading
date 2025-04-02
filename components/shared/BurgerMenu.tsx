@@ -20,7 +20,7 @@ export default function BurgerMenu() {
       />
 
       {opened && (
-        <div className="w-screen z-100 bg-[#181818] p-3 absolute top-0 left-0">
+        <div className="w-screen z-100 h-full bg-[#181818] p-3 absolute top-0 left-0">
           <div className=" bg-[#202020] rounded-md p-5">
             <header className="flex justify-between pb-5 border-b border-[#353535] items-center">
               <span>
