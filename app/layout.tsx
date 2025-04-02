@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-medium ${geistMono.variable}`}>
-        <div className="h-screen w-screen bg-[#181818]">
+        <div className="min-h-screen w-screen h-full bg-[#181818]">
           <header>
             <Header />
           </header>
