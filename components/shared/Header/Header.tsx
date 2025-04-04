@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import NavLink from "../ui/NavLink";
+import Button from "../../ui/Button";
+import Input from "../../ui/Input";
+import NavLink from "../../ui/NavLink";
 import BurgerMenu from "./BurgerMenu";
 
 export default function Header() {
