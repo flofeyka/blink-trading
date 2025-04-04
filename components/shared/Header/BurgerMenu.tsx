@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import NavLink from "../ui/NavLink";
+import NavLink from "../../ui/NavLink";
 
 export default function BurgerMenu() {
   const [opened, setOpened] = useState<boolean>(false);

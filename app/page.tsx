@@ -1,4 +1,4 @@
-import Graphics from "@/components/shared/Graphics";
+import Graphics from "@/components/shared/Graphics/Graphics";
 
 export default function Home() {
   return (
