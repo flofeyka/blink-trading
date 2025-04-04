@@ -250,7 +250,7 @@ export default function BuySell() {
   };
 
   return (
-    <div className="rounded-md overflow-hidden bg-[#202020] max-md:w-full">
+    <div className="rounded-md overflow-hidden bg-[#202020] max-md:w-full xl:w-[25vw]">
       <div className="flex justify-between">
         {Object.values(Mode).map((modeItem: Mode) => (
           <span
