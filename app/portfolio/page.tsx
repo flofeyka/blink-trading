@@ -1,6 +1,6 @@
 import Card from "@/components/ui/Card";
-import Input from "@/components/ui/Input";
 import Image from "next/image";
+import PortfolioTable from "@/components/shared/Portfolio/PortfolioTable";
 
 export default function Portfolio() {
   return (
@@ -42,57 +42,7 @@ export default function Portfolio() {
       </div>
 
       <Card>
-        <div className="pb-3 border-b border-[#353535] flex items-center max-md:justify-between gap-5">
-          <span className="font-medium max-md:text-xl">Holdings</span>
-          <span className="text-[#A9A9A9] font-medium max-md:text-xl">
-            Activity
-          </span>
-          <span>
-            <span className="absolute ml-2 mt-1.5">
-              <Image
-                src="/icons/search.svg"
-                width={20}
-                height={20}
-                alt="search"
-              />
-            </span>
-            <Input
-              placeholder="Search Token"
-              className="w-[200px] max-md:text-12px max-md:w-[125px] h-[35px] pl-8 rounded-3xl px-2 bg-[#353535]"
-            />
-          </span>
-        </div>
-
-        <div>
-          {/* <table className="overflow-x-auto max-w-[90%]">
-            <thead>
-              <tr>
-                <th className="w-[12.5%]">TOKEN / LAST ACTIVE</th>
-                <th className="w-[12.5%]">UNREALIZED</th>
-                <th className="w-[12.5%]">REALIZED PROFIT</th>
-                <th className="w-[12.5%]">TOTAL PROFIT</th>
-                <th className="w-[12.5%]">BALANCE</th>
-                <th className="w-[12.5%]">BOUGHT</th>
-                <th className="w-[12.5%]">SOLD</th>
-                <th className="w-[12.5%]"> </th>
-                <th className="w-[12.5%]"> </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-                <td className="w-[12.5%]">123</td>
-              </tr>
-            </tbody>
-          </table> */}
-        </div>
+        <PortfolioTable />
       </Card>
     </div>
   );
