@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Switch from "../../ui/Switch";
 import Checkbox from "../../ui/Checkbox";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import Button from "../../ui/Button";
 
 enum Mode {
@@ -16,7 +16,11 @@ enum Speed {
   auto = "Auto",
 }
 
-export default function BuySell() {
+type Props = {
+  setDataMode: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function BuySell({ setDataMode }: Props) {
   const [isBuyNow, setIsBuyNow] = useState<boolean>(false);
   const [isBuyDip, setIsBuyDip] = useState<boolean>(false);
   const [mode, setMode] = useState<Mode>(Mode.buy);
@@ -31,7 +35,7 @@ export default function BuySell() {
       case Mode.buy:
         return (
           <div className="flex flex-col gap-3">
-            <div className="flex justify-between items-center w-full text-[#716F7A]">
+            <div className="flex justify-between items-center w-full max-md:hidden text-[#716F7A]">
               <span className="flex items-center gap-2">
                 <Checkbox checked={isBuyDip} setChecked={setIsBuyDip} />
                 Buy Dip
@@ -46,7 +50,14 @@ export default function BuySell() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <div className="flex gap-3">
+              <div className="flex gap-3 items-center">
+                <Image
+                  src="/icons/cardholder_white.svg"
+                  className="w-[25px] h-[30px] md:hidden"
+                  width={30}
+                  height={30}
+                  alt="cardholder"
+                />
                 <span>
                   <span className="absolute ml-3 mt-4">
                     <Image
@@ -90,7 +101,7 @@ export default function BuySell() {
                   />
                 </span>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 max-md:hidden">
                 <span>
                   <span className="absolute ml-3 mt-4">
                     <Image
@@ -134,19 +145,29 @@ export default function BuySell() {
                   />
                 </span>
               </div>
-              <div>
-                <span className="absolute ml-3 mt-3.5">
-                  <Image
-                    src="/icons/solan.svg"
-                    width={20}
-                    height={20}
-                    alt="search"
+              <div className="max-md:flex gap-2 justify-stretch items-center w-full">
+                <Image
+                  src="/icons/settings.svg"
+                  width={30}
+                  className="w-[25px] h-[30px] md:hidden"
+                  height={30}
+                  alt="settings"
+                />
+
+                <span className="w-full">
+                  <span className="absolute ml-3 mt-3.5">
+                    <Image
+                      src="/icons/solan.svg"
+                      width={20}
+                      height={20}
+                      alt="search"
+                    />
+                  </span>
+                  <input
+                    placeholder="Amount to buy in SOL"
+                    className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
                   />
                 </span>
-                <input
-                  placeholder="Amount to buy in SOL"
-                  className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
-                />
               </div>
             </div>
           </div>
@@ -155,7 +176,7 @@ export default function BuySell() {
         return (
           <div>
             <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-center w-full text-[#716F7A]">
+              <div className="flex justify-between items-center w-full max-md:hidden text-[#716F7A]">
                 <span className="flex items-center gap-2">
                   <Checkbox checked={isBuyDip} setChecked={setIsBuyDip} />
                   Sell Dip
@@ -170,7 +191,14 @@ export default function BuySell() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <div className="flex gap-3">
+                <div className="flex gap-3 items-center">
+                  <Image
+                    src="/icons/cardholder_white.svg"
+                    className="w-[25px] h-[30px]"
+                    width={35}
+                    height={35}
+                    alt="cardholder"
+                  />
                   <span>
                     <input
                       placeholder="25%"
@@ -193,10 +221,28 @@ export default function BuySell() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[#716F7A] font-semibold">or</span>
+                <Image
+                  src="/icons/settings.svg"
+                  width={37}
+                  className="w-[25px] pr-[2px] h-[30px]"
+                  height={30}
+                  alt="cardholder"
+                />
+                <span className="text-[#716F7A] font-semibold max-md:hidden">
+                  or
+                </span>
                 <span className="flex w-full">
                   <select className="border-[#716F7A] pl-2 border-2 border-r-0 p-2 rounded-xl rounded-r-none text-[#716F7A]">
-                    <option>SOL</option>
+                    <option className="max-md:hidden flex items-center gap-2 max-md:bg-[url('/icons/solan.svg')] max-md:bg-no-repeat max-md:bg-center max-md:bg-contain w-[10px] max-md:h-full">
+                      {/* <Image
+                        src="/icons/solan.svg"
+                        width={20}
+                        height={20}
+                        alt="solana"
+                        className="inline-block"
+                      /> */}
+                      SOL
+                    </option>
                   </select>
                   <input
                     placeholder="Amount to sell in SOL"
@@ -262,7 +308,6 @@ export default function BuySell() {
           >
             <div className="text-[14px] text-[#A9A9A9] flex items-center justify-center gap-3">
               <span>
-                {" "}
                 <Image
                   src="/icons/blink.svg"
                   width={20}
@@ -274,11 +319,24 @@ export default function BuySell() {
             </div>
           </span>
         ))}
+        <span
+          className={`text-center justify-stretch w-full cursor-pointer bg-[#181818] p-3 xl:hidden`}
+        >
+          <div
+            className="text-[14px] text-[#A9A9A9] flex items-center justify-center gap-3"
+            onClick={() => setDataMode((prev: boolean) => !prev)}
+          >
+            <span>
+              <Image src="/icons/sort.svg" width={20} height={20} alt="blink" />
+            </span>
+            <span>Data</span>
+          </div>
+        </span>{" "}
       </div>
       <div className="p-5 flex flex-col gap-5">
         {getBuySell()}
 
-        <div className="border-t border-b border-[#353535] py-2">
+        <div className="border-t border-b border-[#353535] py-2 max-md:hidden">
           <div
             onClick={() => setAdvancedMode((prev: boolean) => !prev)}
             className="flex items-center justify-between cursor-pointer"
