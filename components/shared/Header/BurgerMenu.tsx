@@ -53,10 +53,10 @@ export default function BurgerMenu() {
               <NavLink onClick={handleOpen} href="/">
                 MEMESCOPE
               </NavLink>
-              <NavLink onClick={handleOpen} href="/">
+              <NavLink onClick={handleOpen} href="/orders">
                 ORDERS
               </NavLink>
-              <NavLink onClick={handleOpen} href="/">
+              <NavLink onClick={handleOpen} href="/portfolio">
                 HOLDINGS
               </NavLink>
               <NavLink onClick={handleOpen} href="/">
@@ -71,7 +71,7 @@ export default function BurgerMenu() {
               <NavLink onClick={handleOpen} href="/">
                 RECALM SOL
               </NavLink>
-              <NavLink onClick={handleOpen} href="/">
+              <NavLink onClick={handleOpen} href="/settings">
                 SETTINGS
               </NavLink>
               <NavLink onClick={handleOpen} href="/">

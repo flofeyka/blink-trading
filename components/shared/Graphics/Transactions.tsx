@@ -733,7 +733,7 @@ export default function Transactions() {
   };
 
   return (
-    <div className="bg-[#202020] rounded-b-md p-4 overflow-hidden">
+    <div className="bg-[#202020] rounded-b-md p-4 overflow-hidden max-md:hidden">
       {/* Tabs */}
       <div className="flex gap-4 border-b border-[#353535] overflow-x-auto">
         {tabs.map((tab) => (

@@ -1,6 +1,6 @@
 export default function Statistics() {
   return (
-    <div className="rounded-md bg-[#202020]">
+    <div className="rounded-md bg-[#202020] max-md:hidden">
       <div className="flex justify-between">
         <span className="text-center w-[25%] focus:bg-[#353535] border-r border-b border-[#353535] p-3">
           <div className="text-[12px] text-[#A9A9A9]">5M</div>

@@ -30,7 +30,7 @@ export default function RootLayout({
           <header>
             <Header />
           </header>
-          <main className="px-10 mt-10 max-md:px-5">{children}</main>
+          <main className="px-10 max-md:mt-5 mt-10 max-md:px-2">{children}</main>
         </div>
       </body>
     </html>

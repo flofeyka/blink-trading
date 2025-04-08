@@ -14,12 +14,12 @@ export default function Header() {
           <Image alt="blink" src="/icons/logo.svg" width={112} height={45} />
         </Link>
         <div className="flex gap-2 text-[13px] max-xl:hidden">
-          <NavLink>NEW PAIRS</NavLink>
-          <NavLink>TRENDING</NavLink>
-          <NavLink>MEMESCOPE</NavLink>
-          <NavLink>ORDERS</NavLink>
-          <NavLink>HOLDINGS</NavLink>
-          <NavLink>LEADERBOARD</NavLink>
+          {/* <NavLink>NEW PAIRS</NavLink>
+          <NavLink>TRENDING</NavLink> */}
+          <NavLink href="/">TRENDING</NavLink>
+          <NavLink href="/orders">ORDERS</NavLink>
+          <NavLink href="/portfolio">HOLDINGS</NavLink>
+          {/* <NavLink>LEADERBOARD</NavLink> */}
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Card from "../../ui/Card";
 import Image from "next/image";
 import BuySell from "./BuySell";
@@ -11,13 +11,17 @@ import Switch from "@/components/ui/Switch";
 export default function Graphics() {
   const container: any = useRef(undefined);
 
+  const [dataMode, setDataMode] = useState<boolean>(false);
+
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src =
-      "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-    script.type = "text/javascript";
-    script.async = true;
-    script.innerHTML = `
+    if (!dataMode) {
+      const width = window.innerWidth;
+      const script = document.createElement("script");
+      script.src =
+        "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+      script.type = "text/javascript";
+      script.async = true;
+      script.innerHTML = `
         {
           "height": "530",
           "autosize": true,
@@ -36,50 +40,124 @@ export default function Graphics() {
           "popup_height": "1000",
           "support_host": "https://www.tradingview.com"
         }`;
-    container.current.appendChild(script);
-  }, []);
+      if (width < 500) {
+        script.innerHTML = `
+            {
+          "height": "300",
+          "autosize": true,
+          "symbol": "NASDAQ:AAPL",
+          "interval": "D",
+          "timezone": "Etc/UTC",
+          "theme": "dark",
+          "style": "1",
+          "locale": "en",
+          "hide_legend": true,
+          "allow_symbol_change": false,
+          "save_image": false,
+          "hide_volume": true,
+          "support_host": "https://www.tradingview.com"
+        }`;
+      }
+      container.current.appendChild(script);
+    }
+  }, [dataMode]);
 
   return (
     <div className="flex flex-col gap-5 max-w-full">
       <div className="flex gap-5 max-md:flex-col max-w-full">
-        <div className="w-[75%] max-md:w-full overflow-hidden">
-          <div className="bg-[#202020] rounded-t-md px-3 p-1 flex items-center justify-between">
-            <span className="items-center gap-2  flex">
-              <span>
-                <Image
-                  src="/icons/favourite.svg"
-                  width={27}
-                  height={27}
-                  alt="favourite"
-                  className="cursor-pointer"
-                />
+        {dataMode ? (
+          <Card className="text-[12px]">
+            <main className="flex flex-col gap-5">
+              <div className="flex justify-between w-[85%]">
+                <span className="text-[#A9A9A9]">Price USD / SOL</span>
+                <span>$0.031245 / 0.052355</span>
+              </div>
+              <div className="flex justify-between w-[85%]">
+                <span className="text-[#A9A9A9]">Liquidity</span>
+                <span>$45K</span>
+              </div>
+              <div className="flex justify-between w-[85%]">
+                <span className="text-[#A9A9A9]">MKT Cap</span>
+                <span>$124.45K</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#A9A9A9]">Invested/Sold</span>
+                <span className="flex justify-between gap-7">
+                  0.000000 / 0.000000
+                  <Image
+                    src="/icons/cardholder.svg"
+                    width={20}
+                    height={20}
+                    alt="cardholder"
+                  />
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#A9A9A9]">Remaining</span>
+                <span className="flex justify-between gap-7">
+                  0.000000
+                  <Image
+                    src="/icons/cardholder.svg"
+                    width={20}
+                    height={20}
+                    alt="cardholder"
+                  />
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#A9A9A9]">Change in P&L</span>
+                <span className="text-[#F31D36] flex justify-between gap-7">
+                  N/A{" "}
+                  <Image
+                    src="/icons/cardholder.svg"
+                    width={20}
+                    height={20}
+                    alt="cardholder"
+                  />
+                </span>
+              </div>
+            </main>
+          </Card>
+        ) : (
+          <div className="w-[75%] max-md:w-full overflow-hidden">
+            <div className="bg-[#202020] max-md:bg-[#181818] rounded-t-md px-3 p-1 flex items-center justify-between">
+              <span className="items-center gap-2  flex">
+                <span>
+                  <Image
+                    src="/icons/favourite.svg"
+                    width={27}
+                    height={27}
+                    alt="favourite"
+                    className="cursor-pointer"
+                  />
+                </span>
+                <span>
+                  <div className="w-[30px] h-[30px] rounded-full bg-[#3D3D3D]" />
+                </span>
+                <span>$EFBWEH</span>
               </span>
-              <span>
-                <div className="w-[30px] h-[30px] rounded-full bg-[#3D3D3D]" />
-              </span>
-              <span>$EFBWEH</span>
-            </span>
 
-            <span className="space-x-3">
-              <Switch /> Outlier
-            </span>
-          </div>
-          <div
-            className="tradingview-widget-container"
-            ref={container}
-            style={{ height: "100%", width: "100%" }}
-          >
+              <span className="space-x-3 text-[#716F7A]">
+                <Switch /> Outlier
+              </span>
+            </div>
             <div
-              className="tradingview-widget-container__widget"
-              style={{ height: "calc(100% - 32px)", width: "100%" }}
-            ></div>
-            <div></div>
+              className="tradingview-widget-container"
+              ref={container}
+              style={{ height: "100%", width: "100%" }}
+            >
+              <div
+                className="tradingview-widget-container__widget"
+                style={{ height: "calc(100% - 32px)", width: "100%" }}
+              ></div>
+              <div></div>
+            </div>
+            <Transactions />
           </div>
-          <Transactions />
-        </div>
+        )}
 
         <div className="flex flex-col gap-5 flex-1">
-          <Card className="w-full font-medium">
+          <Card className="w-full font-medium max-md:hidden">
             <div className="flex border-b border-[#353535] gap-2 pb-3">
               <div className="w-[45px] h-[45px] rounded-full bg-[#3D3D3D]" />
 
@@ -154,7 +232,7 @@ export default function Graphics() {
             </div>
           </Card>
           <Statistics />
-          <BuySell />
+          <BuySell setDataMode={setDataMode} />
         </div>
       </div>
     </div>
