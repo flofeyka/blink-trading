@@ -296,7 +296,7 @@ export default function BuySell({ setDataMode }: Props) {
   };
 
   return (
-    <div className="rounded-md overflow-hidden bg-[#202020] max-md:w-full xl:w-[25vw]">
+    <div className="rounded-md overflow-hidden bg-[#202020]">
       <div className="flex justify-between">
         {Object.values(Mode).map((modeItem: Mode) => (
           <span
