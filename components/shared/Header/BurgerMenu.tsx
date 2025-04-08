@@ -45,22 +45,13 @@ export default function BurgerMenu() {
 
             <main className="flex flex-col gap-5 mt-5 font-medium pb-3 border-b border-[#353535] mb-5">
               <NavLink onClick={handleOpen} href="/">
-                NEW PAIRS
-              </NavLink>
-              <NavLink onClick={handleOpen} href="/">
                 TRENDING
-              </NavLink>
-              <NavLink onClick={handleOpen} href="/">
-                MEMESCOPE
               </NavLink>
               <NavLink onClick={handleOpen} href="/orders">
                 ORDERS
               </NavLink>
               <NavLink onClick={handleOpen} href="/portfolio">
                 HOLDINGS
-              </NavLink>
-              <NavLink onClick={handleOpen} href="/">
-                LEADERBOARD
               </NavLink>
               <NavLink onClick={handleOpen} href="/referral">
                 REFERRAL TRACKING
