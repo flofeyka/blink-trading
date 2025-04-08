@@ -59,7 +59,7 @@ export default function BuySell({ setDataMode }: Props) {
                   alt="cardholder"
                 />
                 <span>
-                  <span className="absolute ml-3 mt-4">
+                  <span className="absolute ml-3 mt-3">
                     <Image
                       src="/icons/solan.svg"
                       width={15}
@@ -73,7 +73,7 @@ export default function BuySell({ setDataMode }: Props) {
                   />
                 </span>
                 <span>
-                  <span className="absolute ml-3 mt-4">
+                  <span className="absolute ml-3 mt-3">
                     <Image
                       src="/icons/solan.svg"
                       width={15}
@@ -87,7 +87,7 @@ export default function BuySell({ setDataMode }: Props) {
                   />
                 </span>
                 <span>
-                  <span className="absolute ml-3 mt-4">
+                  <span className="absolute ml-3 mt-3">
                     <Image
                       src="/icons/solan.svg"
                       width={15}
@@ -103,7 +103,7 @@ export default function BuySell({ setDataMode }: Props) {
               </div>
               <div className="flex gap-3 max-md:hidden">
                 <span>
-                  <span className="absolute ml-3 mt-4">
+                  <span className="absolute ml-3 mt-3">
                     <Image
                       src="/icons/solan.svg"
                       width={15}
@@ -117,7 +117,7 @@ export default function BuySell({ setDataMode }: Props) {
                   />
                 </span>
                 <span>
-                  <span className="absolute ml-3 mt-4">
+                  <span className="absolute ml-3 mt-3">
                     <Image
                       src="/icons/solan.svg"
                       width={15}
@@ -131,7 +131,7 @@ export default function BuySell({ setDataMode }: Props) {
                   />
                 </span>
                 <span>
-                  <span className="absolute ml-3 mt-4">
+                  <span className="absolute ml-3 mt-3">
                     <Image
                       src="/icons/solan.svg"
                       width={15}
@@ -155,11 +155,11 @@ export default function BuySell({ setDataMode }: Props) {
                 />
 
                 <span className="w-full">
-                  <span className="absolute ml-3 mt-3.5">
+                  <span className="absolute ml-3 mt-2.5">
                     <Image
                       src="/icons/solan.svg"
-                      width={20}
-                      height={20}
+                      width={17}
+                      height={17}
                       alt="search"
                     />
                   </span>
@@ -296,14 +296,17 @@ export default function BuySell({ setDataMode }: Props) {
   };
 
   return (
-    <div className="rounded-md overflow-hidden bg-[#202020]">
+    <div className="rounded-md overflow-hidden ">
       <div className="flex justify-between">
-        {Object.values(Mode).map((modeItem: Mode) => (
+        {Object.values(Mode).map((modeItem: Mode, index: number) => (
           <span
             key={modeItem}
             onClick={() => setMode(modeItem)}
             className={`text-center justify-stretch w-full cursor-pointer ${
-              mode === modeItem && "bg-[#353535]"
+              mode === modeItem ? "bg-[#353535]" : "bg-[#202020]"
+            } ${
+              index + 1 === Object.values(Mode).length &&
+              "max-md:rounded-tr-md z-20"
             } border-r border-b border-[#353535] p-3`}
           >
             <div className="text-[14px] text-[#A9A9A9] flex items-center justify-center gap-3">
@@ -333,7 +336,7 @@ export default function BuySell({ setDataMode }: Props) {
           </div>
         </span>{" "}
       </div>
-      <div className="p-5 flex flex-col gap-5">
+      <div className="p-5 flex bg-[#202020] flex-col gap-5">
         {getBuySell()}
 
         <div className="border-t border-b border-[#353535] py-2 max-md:hidden">

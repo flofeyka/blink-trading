@@ -43,7 +43,7 @@ export default function Graphics() {
       if (width < 500) {
         script.innerHTML = `
             {
-          "height": "300",
+          "height": "270",
           "autosize": true,
           "symbol": "NASDAQ:AAPL",
           "interval": "D",
@@ -156,18 +156,18 @@ export default function Graphics() {
           </div>
         )}
 
-        <div className="flex md:max-w-[350px] md:min-w-[350px] max-md:w-full flex-col gap-5 flex-1">
+        <div className="flex md:max-w-[275px] md:min-w-[275px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
           <Card className="font-medium max-md:hidden">
             <div className="flex border-b border-[#353535] gap-2 pb-3">
-              <div className="w-[45px] h-[45px] rounded-full bg-[#3D3D3D]" />
+              <div className="w-[40px] h-[40px] rounded-full bg-[#3D3D3D]" />
 
               <div>
                 <div className="flex gap-1 items-center text-lg">
-                  <span className="pr-3 text-[16px]">EFBWEH</span>
-                  <span className="border-r border-[#353535] pr-2 text-[12px] text-[#A9A9A9]">
+                  <span className="pr-3 text-[12px]">EFBWEH</span>
+                  <span className="border-r text-[8px] border-[#353535] pr-2 text-[#A9A9A9]">
                     EFBW.EH
                   </span>
-                  <span className="text-sm text-green-400 pl-2 w-full break-keep">
+                  <span className="text-[11px] text-green-400 pl-2 w-full break-keep">
                     Verity profile
                   </span>
                 </div>
