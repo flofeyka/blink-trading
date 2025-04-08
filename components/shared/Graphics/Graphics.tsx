@@ -119,7 +119,7 @@ export default function Graphics() {
             </main>
           </Card>
         ) : (
-          <div className="w-[75%] max-md:w-full overflow-hidden">
+          <div className="w-full max-md:w-full overflow-hidden">
             <div className="bg-[#202020] max-md:bg-[#181818] rounded-t-md px-3 p-1 flex items-center justify-between">
               <span className="items-center gap-2  flex">
                 <span>
@@ -156,8 +156,8 @@ export default function Graphics() {
           </div>
         )}
 
-        <div className="flex flex-col gap-5 flex-1">
-          <Card className="w-full font-medium max-md:hidden">
+        <div className="flex md:max-w-[350px] md:min-w-[350px] max-md:w-full flex-col gap-5 flex-1">
+          <Card className="font-medium max-md:hidden">
             <div className="flex border-b border-[#353535] gap-2 pb-3">
               <div className="w-[45px] h-[45px] rounded-full bg-[#3D3D3D]" />
 
