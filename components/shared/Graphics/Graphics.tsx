@@ -141,7 +141,13 @@ export default function Graphics() {
                   />
                 </span>
                 <span>
-                  <div className="w-[30px] h-[30px] rounded-full bg-[#3D3D3D]" />
+                  <Image
+                    src="/images/trump.jpg"
+                    className="w-[30px] h-[30px] object-right-top rounded-full bg-[#3D3D3D]"
+                    height={30}
+                    width={30}
+                    alt="trump"
+                  />
                 </span>
                 <span>$TRUMP/USDC</span>
               </span>
@@ -168,12 +174,16 @@ export default function Graphics() {
         <div className="flex md:max-w-[300px] md:min-w-[300px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
           <Card className="font-medium max-md:hidden">
             <div className="flex border-b border-[#353535] gap-2 pb-3">
-              <div className="w-[40px] h-[40px] rounded-full bg-[#3D3D3D]" />
-
+              <Image
+                src="/images/trump.jpg"
+                className="w-[40px] h-[40px] object-cover object-right-top rounded-full bg-[#3D3D3D]"
+                height={30}
+                width={30}
+                alt="trump"
+              />
               <div>
                 <div className="flex gap-1 items-center text-lg">
-                  <span className="pr-3 text-[12px]">TRUMP
-                  </span>
+                  <span className="pr-3 text-[12px]">TRUMP</span>
                   <span className="border-r text-[8px] border-[#353535] pr-2 text-[#A9A9A9]">
                     TRUMP/USDC
                   </span>
