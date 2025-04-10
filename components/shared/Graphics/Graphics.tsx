@@ -11,6 +11,10 @@ import Switch from "@/components/ui/Switch";
 export default function Graphics() {
   const container: any = useRef(undefined);
 
+  const [token, setToken] = useState<string>(
+    "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+  );
+
   const [dataMode, setDataMode] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,7 +29,7 @@ export default function Graphics() {
         {
           "height": "530",
           "autosize": true,
-          "symbol": "NASDAQ:AAPL",
+          "symbol": "COINBASE:TRUMPUSDC",
           "timezone": "Etc/UTC",
           "theme": "dark",
           "style": "1",
@@ -45,7 +49,7 @@ export default function Graphics() {
             {
           "height": "270",
           "autosize": true,
-          "symbol": "NASDAQ:AAPL",
+          "symbol": "COINBASE:TRUMPUSDC",
           "interval": "D",
           "timezone": "Etc/UTC",
           "theme": "dark",
@@ -61,6 +65,11 @@ export default function Graphics() {
       container.current.appendChild(script);
     }
   }, [dataMode]);
+
+  const shortenString = (str: string, startLength = 3, endLength = 4) => {
+    if (str.length <= startLength + endLength) return str;
+    return `${str.slice(0, startLength)}...${str.slice(-endLength)}`;
+  };
 
   return (
     <div className="flex flex-col gap-5 max-w-full">
@@ -134,7 +143,7 @@ export default function Graphics() {
                 <span>
                   <div className="w-[30px] h-[30px] rounded-full bg-[#3D3D3D]" />
                 </span>
-                <span>$EFBWEH</span>
+                <span>$TRUMP/USDC</span>
               </span>
 
               <span className="space-x-3 text-[#716F7A]">
@@ -156,25 +165,30 @@ export default function Graphics() {
           </div>
         )}
 
-        <div className="flex md:max-w-[275px] md:min-w-[275px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
+        <div className="flex md:max-w-[300px] md:min-w-[300px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
           <Card className="font-medium max-md:hidden">
             <div className="flex border-b border-[#353535] gap-2 pb-3">
               <div className="w-[40px] h-[40px] rounded-full bg-[#3D3D3D]" />
 
               <div>
                 <div className="flex gap-1 items-center text-lg">
-                  <span className="pr-3 text-[12px]">EFBWEH</span>
+                  <span className="pr-3 text-[12px]">TRUMP
+                  </span>
                   <span className="border-r text-[8px] border-[#353535] pr-2 text-[#A9A9A9]">
-                    EFBW.EH
+                    TRUMP/USDC
                   </span>
                   <span className="text-[11px] text-green-400 pl-2 w-full break-keep">
                     Verity profile
                   </span>
                 </div>
                 <div className="flex gap-2 items-center text-lg">
-                  <span className="text-[#A9A9A9] text-[12px]">smd...34rj</span>
+                  <span className="text-[#A9A9A9] text-[12px]">
+                    {shortenString(token)}
+                  </span>
                   <span>
                     <Image
+                      className="cursor-pointer"
+                      onClick={() => navigator.clipboard.writeText(token)}
                       src="/icons/copy.svg"
                       width={20}
                       height={20}
@@ -204,15 +218,15 @@ export default function Graphics() {
             <div className="flex justify-between py-3 border-b border-[#353535]">
               <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">LP BURNED</div>
-                <div>$0.0045354</div>
+                <div className="text-[14px]">$0.0045354</div>
               </span>
               <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">PRICE SOL</div>
-                <div>$0.0064748</div>
+                <div className="text-[14px]">$8.0109 USDC</div>
               </span>
               <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">SUPPLY</div>
-                <div>1B</div>
+                <div className="text-[14px]">1B</div>
               </span>
             </div>
 
@@ -222,11 +236,24 @@ export default function Graphics() {
                   <div className="text-[#A9A9A9] mb-1 text-[12px]">
                     LIQUIDITY
                   </div>
-                  <div>$13.4K</div>
+                  <div className="text-[14px]">
+                    $
+                    {(335000000).toLocaleString("en-US", {
+                      maximumFractionDigits: 1,
+                      notation: "compact",
+                      compactDisplay: "short",
+                    })}
+                  </div>
                 </span>
                 <span>
                   <div className="text-[#A9A9A9] mb-1 text-[12px]">MKT CAP</div>
-                  <div>$4.67K</div>
+                  <div className="text-[14px]">
+                    $
+                    {(1600000000).toLocaleString("en-US", {
+                      notation: "compact",
+                      compactDisplay: "short",
+                    })}
+                  </div>
                 </span>
               </div>
             </div>

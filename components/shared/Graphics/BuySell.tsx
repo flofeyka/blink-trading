@@ -344,7 +344,7 @@ export default function BuySell({ setDataMode }: Props) {
             onClick={() => setAdvancedMode((prev: boolean) => !prev)}
             className="flex items-center justify-between cursor-pointer"
           >
-            <span className="flex gap-2">
+            <span className="flex gap-2 text-[14px]">
               <span>
                 <Image
                   src="/icons/settings.svg"
@@ -357,7 +357,7 @@ export default function BuySell({ setDataMode }: Props) {
             </span>
             <span className="flex gap-2">
               {!isAdvancedValid && (
-                <span className="text-red-600">Warning</span>
+                <span className="text-red-600 text-[12px]">Warning</span>
               )}
               <Image
                 src="/icons/arrow-right.svg"
@@ -369,7 +369,7 @@ export default function BuySell({ setDataMode }: Props) {
             </span>
           </div>
           {advancedMode && (
-            <div className="flex gap-5 flex-col pb-3">
+            <div className="flex gap-5 flex-col pb-3 mt-3">
               <div className="flex gap-5">
                 <span className="flex flex-col">
                   <label className="mb-3 text-[#716F7A]">Slippape %</label>
