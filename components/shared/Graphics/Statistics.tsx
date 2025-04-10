@@ -66,13 +66,13 @@ export default function Statistics() {
   const [selectedMode, setSelectedMode] = useState(modes[0]);
 
   return (
-    <div className="rounded-md bg-[#202020] max-md:hidden">
-      <div className="flex justify-stretch overflow-hidden">
+    <div className="rounded-md bg-[#202020] max-md:hidden overflow-hidden">
+      <div className="flex justify-stretch ">
         {modes.map((mode) => (
           <span
             key={mode.id}
             onClick={() => setSelectedMode(mode)}
-            className={`text-center cursor-pointer w-full ${
+            className={`text-center cursor-pointer overflow-hidden w-full ${
               mode.id === selectedMode.id ? "bg-[#353535]" : ""
             } border-r border-b border-[#353535] p-3 last:border-r-0`}
           >
