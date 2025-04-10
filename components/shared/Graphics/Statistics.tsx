@@ -116,11 +116,11 @@ export default function Statistics() {
             <div className="flex justify-between w-full">
               <span>
                 <div className="text-[#A9A9A9]">BUYS</div>
-                <div>{selectedMode.buys}</div>
+                <div>{selectedMode.buys.toLocaleString("en-US")}</div>
               </span>
               <span className="text-end">
                 <div className="text-[#A9A9A9]">SELLS</div>
-                <div>{selectedMode.sells}</div>
+                <div>{selectedMode.sells.toLocaleString("en-US")}</div>
               </span>
             </div>
             <div className="w-full h-1 bg-red-500 rounded-full">
@@ -177,11 +177,11 @@ export default function Statistics() {
             <div className="flex justify-between w-full">
               <span>
                 <div className="text-[#A9A9A9]">BUYERS</div>
-                <div>{selectedMode.buyers}</div>
+                <div>{selectedMode.buyers.toLocaleString("en-US")}</div>
               </span>
               <span className="text-end">
                 <div className="text-[#A9A9A9]">SELLERS</div>
-                <div>{selectedMode.sellers}</div>
+                <div>{selectedMode.sellers.toLocaleString("en-US")}</div>
               </span>
             </div>
             <div className="w-full h-1 bg-red-500 rounded-full">
