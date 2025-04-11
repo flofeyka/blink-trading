@@ -157,9 +157,9 @@ export default function Graphics() {
               </span>
             </div>
             <div
-              className="tradingview-widget-container"
+              className="tradingview-widget-container min-h-[530px] max-h-[60vw]"
               ref={container}
-              style={{ height: "100%", width: "100%" }}
+              style={{ width: "100%" }}
             >
               <div
                 className="tradingview-widget-container__widget"

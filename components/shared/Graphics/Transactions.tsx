@@ -17,6 +17,7 @@ interface Transaction {
 
 interface Holding {
   token: string;
+  image: string;
   lastActive: string;
   unrealizedProfit: number;
   profitPercent: number;
@@ -77,7 +78,7 @@ export default function Transactions() {
     },
     {
       id: "holders",
-      label: "Holders (3)",
+      label: "Holders (12272)",
       icon: "/icons/holders.svg",
     },
     {
@@ -124,15 +125,16 @@ export default function Transactions() {
   // Holdings data
   const holdings: Holding[] = [
     {
-      token: "WHALE",
+      token: "TRUMP",
+      image: '/images/trump.jpg',
       lastActive: "5h",
-      unrealizedProfit: 34.45,
-      profitPercent: 7.89,
-      realizedProfit: 21.66,
-      totalProfit: 56.11,
-      balance: 315.43,
+      unrealizedProfit: 689,
+      profitPercent: 157.8,
+      realizedProfit: 433.2,
+      totalProfit: 1122.2,
+      balance: 6308.6,
       bought: 310.55,
-      sold: 55.76,
+      sold: 0,
     },
   ];
 
@@ -408,7 +410,7 @@ export default function Transactions() {
             height={20}
             alt="token"
           />
-          <div className="w-6 h-6 bg-[#D9D9D9] rounded-full" />
+          <Image src={row.image} className="w-6 h-6 bg-[#D9D9D9] rounded-full" width={30} height={30} alt={"coin"} />
           <span className="text-[#00FFA3]">{value}</span>
           <span className="text-[#A9A9A9]">{row.lastActive}</span>
         </div>
