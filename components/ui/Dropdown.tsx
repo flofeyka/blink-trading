@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect, ReactNode } from "react";
-import Image from "next/image";
+import React, {ReactNode, useEffect, useRef, useState} from "react";
 
 interface DropdownProps {
   trigger: ReactNode;
@@ -54,7 +53,7 @@ export default function Dropdown({
 
       <div
         className={`absolute z-50 mt-2 shadow-2xl shadow-black bg-[#202020] rounded-md overflow-hidden transition-all duration-200 ${
-          align === "right" ? "right-10" : "left-0"
+          align === "right" ? "right-5" : "left-0"
         } ${dropdownClassName} origin-top-${
           align === "right" ? "right" : "left"
         } ${
