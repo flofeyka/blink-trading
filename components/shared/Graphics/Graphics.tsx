@@ -24,7 +24,6 @@ export default function Graphics() {
             script.async = true;
             script.innerHTML = `
         {
-          "height": "560",
           "autosize": true,
           "symbol": "COINBASE:TRUMPUSDC",
           "timezone": "Etc/UTC",
@@ -69,24 +68,24 @@ export default function Graphics() {
     };
 
     return (<div className="flex flex-col gap-5 max-w-full">
-            <div className="flex gap-5 max-md:flex-col max-w-full">
-                {dataMode ? (<Card className="text-[12px]">
-                        <main className="flex flex-col gap-5">
-                            <div className="flex justify-between w-[85%]">
-                                <span className="text-[#A9A9A9]">Price USD / SOL</span>
-                                <span>$0.031245 / 0.052355</span>
-                            </div>
-                            <div className="flex justify-between w-[85%]">
-                                <span className="text-[#A9A9A9]">Liquidity</span>
-                                <span>$45K</span>
-                            </div>
-                            <div className="flex justify-between w-[85%]">
-                                <span className="text-[#A9A9A9]">MKT Cap</span>
-                                <span>$124.45K</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-[#A9A9A9]">Invested/Sold</span>
-                                <span className="flex justify-between gap-7">
+        <div className="flex gap-5 max-md:flex-col max-w-full">
+            {dataMode ? (<Card className="text-[12px]">
+                <main className="flex flex-col gap-5">
+                    <div className="flex justify-between w-[85%]">
+                        <span className="text-[#A9A9A9]">Price USD / SOL</span>
+                        <span>$0.031245 / 0.052355</span>
+                    </div>
+                    <div className="flex justify-between w-[85%]">
+                        <span className="text-[#A9A9A9]">Liquidity</span>
+                        <span>$45K</span>
+                    </div>
+                    <div className="flex justify-between w-[85%]">
+                        <span className="text-[#A9A9A9]">MKT Cap</span>
+                        <span>$124.45K</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="text-[#A9A9A9]">Invested/Sold</span>
+                        <span className="flex justify-between gap-7">
                   0.000000 / 0.000000
                   <Image
                       src="/icons/cardholder.svg"
@@ -95,10 +94,10 @@ export default function Graphics() {
                       alt="cardholder"
                   />
                 </span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-[#A9A9A9]">Remaining</span>
-                                <span className="flex justify-between gap-7">
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="text-[#A9A9A9]">Remaining</span>
+                        <span className="flex justify-between gap-7">
                   0.000000
                   <Image
                       src="/icons/cardholder.svg"
@@ -107,23 +106,23 @@ export default function Graphics() {
                       alt="cardholder"
                   />
                 </span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-[#A9A9A9]">Change in P&L</span>
-                                <span className="text-[#F31D36] flex justify-between gap-7">
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="text-[#A9A9A9]">Change in P&L</span>
+                        <span className="text-[#F31D36] flex justify-between gap-7">
                   N/A{" "}
-                                    <Image
-                                        src="/icons/cardholder.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="cardholder"
-                                    />
+                            <Image
+                                src="/icons/cardholder.svg"
+                                width={20}
+                                height={20}
+                                alt="cardholder"
+                            />
                 </span>
-                            </div>
-                        </main>
-                    </Card>) : (<div className="w-full h-full max-md:w-full overflow-hidden">
-                        <div
-                            className="bg-[#202020] h-full max-md:bg-[#181818] rounded-t-md px-3 p-1 flex items-center justify-between">
+                    </div>
+                </main>
+            </Card>) : (<div className="w-full h-[90vh] flex flex-col justify-stretch max-md:w-full overflow-hidden">
+                <div
+                    className="bg-[#202020] max-md:bg-[#181818] rounded-t-md px-3 p-1 flex items-center justify-between">
               <span className="items-center gap-2  flex">
                 <span>
                   <Image
@@ -146,48 +145,48 @@ export default function Graphics() {
                 <span>$TRUMP/USDC</span>
               </span>
 
-                            <span className="space-x-3 text-[#716F7A]">
+                    <span className="space-x-3 text-[#716F7A]">
                 <Switch/> Outlier
               </span>
-                        </div>
-                        <div
-                            className="tradingview-widget-container h-full"
-                            ref={container}
-                            style={{width: "100%"}}
-                        >
-                            <div
-                                className="tradingview-widget-container__widget"
-                                style={{height: "calc(100% - 32px)", width: "100%"}}
-                            ></div>
-                        </div>
-                        <Transactions/>
-                    </div>)}
+                </div>
+                <div
+                    className="tradingview-widget-container"
+                    ref={container}
+                    style={{width: "100%", height: '100%'}}
+                >
+                    <div
+                        className="tradingview-widget-container__widget"
+                        style={{height: "calc(100% - 32px)", width: "100%"}}
+                    ></div>
+                </div>
+                <Transactions/>
+            </div>)}
 
-                <div className="flex md:max-w-[300px] md:min-w-[300px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
-                    <Card className="font-medium max-md:hidden">
-                        <div className="flex border-b border-[#353535] gap-2 pb-3">
-                            <Image
-                                src="/images/trump.jpg"
-                                className="w-[40px] h-[40px] object-cover object-right-top rounded-full bg-[#3D3D3D]"
-                                height={30}
-                                width={30}
-                                alt="trump"
-                            />
-                            <div>
-                                <div className="flex gap-1 items-center text-lg">
-                                    <span className="pr-3 text-[12px]">TRUMP</span>
-                                    <span className="border-r text-[8px] border-[#353535] pr-2 text-[#A9A9A9]">
+            <div className="flex md:max-w-[300px] md:min-w-[300px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
+                <Card className="font-medium max-md:hidden">
+                    <div className="flex border-b border-[#353535] gap-2 pb-3">
+                        <Image
+                            src="/images/trump.jpg"
+                            className="w-[40px] h-[40px] object-cover object-right-top rounded-full bg-[#3D3D3D]"
+                            height={30}
+                            width={30}
+                            alt="trump"
+                        />
+                        <div>
+                            <div className="flex gap-1 items-center text-lg">
+                                <span className="pr-3 text-[12px]">TRUMP</span>
+                                <span className="border-r text-[8px] border-[#353535] pr-2 text-[#A9A9A9]">
                     TRUMP/USDC
                   </span>
-                                    <span className="text-[11px] text-green-400 pl-2 w-full break-keep">
+                                <span className="text-[11px] text-green-400 pl-2 w-full break-keep">
                     Verity profile
                   </span>
-                                </div>
-                                <div className="flex gap-2 items-center text-lg">
+                            </div>
+                            <div className="flex gap-2 items-center text-lg">
                   <span className="text-[#A9A9A9] text-[12px]">
                     {shortenString(token)}
                   </span>
-                                    <span>
+                                <span>
                     <Image
                         className="cursor-pointer"
                         onClick={() => navigator.clipboard.writeText(token)}
@@ -197,7 +196,7 @@ export default function Graphics() {
                         alt="copy"
                     />
                   </span>
-                                    <span>
+                                <span>
                     <Image
                         src="/icons/x.svg"
                         width={20}
@@ -205,7 +204,7 @@ export default function Graphics() {
                         alt="copy"
                     />
                   </span>
-                                    <span>
+                                <span>
                     <Image
                         src="/icons/internet.svg"
                         width={20}
@@ -213,27 +212,27 @@ export default function Graphics() {
                         alt="copy"
                     />
                   </span>
-                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="flex justify-between py-3 border-b border-[#353535]">
+                    <div className="flex justify-between py-3 border-b border-[#353535]">
               <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">LP BURNED</div>
                 <div className="text-[14px]">$0.0045354</div>
               </span>
-                            <span>
+                        <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">PRICE SOL</div>
                 <div className="text-[14px]">$8.0109 USDC</div>
               </span>
-                            <span>
+                        <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">SUPPLY</div>
                 <div className="text-[14px]">1B</div>
               </span>
-                        </div>
+                    </div>
 
-                        <div className="pt-3">
-                            <div className="w-[61%] flex justify-between">
+                    <div className="pt-3">
+                        <div className="w-[61%] flex justify-between">
                 <span>
                   <div className="text-[#A9A9A9] mb-1 text-[12px]">
                     LIQUIDITY
@@ -245,7 +244,7 @@ export default function Graphics() {
                       })}
                   </div>
                 </span>
-                                <span>
+                            <span>
                   <div className="text-[#A9A9A9] mb-1 text-[12px]">MKT CAP</div>
                   <div className="text-[14px]">
                     $
@@ -254,12 +253,12 @@ export default function Graphics() {
                       })}
                   </div>
                 </span>
-                            </div>
                         </div>
-                    </Card>
-                    <Statistics/>
-                    <BuySell setDataMode={setDataMode}/>
-                </div>
+                    </div>
+                </Card>
+                <Statistics/>
+                <BuySell setDataMode={setDataMode}/>
             </div>
-        </div>);
+        </div>
+    </div>);
 }
