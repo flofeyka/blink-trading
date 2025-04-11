@@ -1,6 +1,6 @@
 import Header from "@/components/shared/Header/Header";
-import type { Metadata } from "next";
-import { Geist, Montserrat } from "next/font/google";
+import type {Metadata} from "next";
+import {Geist, Montserrat} from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-medium ${geistMono.variable}`}>
-        <div className="min-h-screen pb-10 h-full bg-[#181818] text-white font-medium">
+        <div className="min-h-screen pb-10 h-full w-full bg-[#181818] text-white font-medium">
           <header>
             <Header />
           </header>
