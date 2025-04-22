@@ -120,7 +120,7 @@ export default function Graphics() {
                 </span>
                     </div>
                 </main>
-            </Card>) : (<div className="w-full h-[90vh] flex flex-col justify-stretch max-md:w-full overflow-hidden">
+            </Card>) : (<div className="w-full flex flex-col justify-stretch max-md:w-full overflow-hidden">
                 <div
                     className="bg-[#202020] max-md:bg-[#181818] rounded-t-md px-3 p-1 flex items-center justify-between">
               <span className="items-center gap-2  flex">
