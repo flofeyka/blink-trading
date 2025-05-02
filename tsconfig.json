@@ -21,7 +21,6 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@submodule/*": ["submodules/your-submodule/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
