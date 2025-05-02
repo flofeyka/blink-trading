@@ -1,0 +1,3 @@
+[submodule "submodule"]
+	path = blink-sdk
+	url = https://github.com/flofeyka/blink-sdk.git
