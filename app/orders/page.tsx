@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import {useLayoutEffect, useState} from "react";
 import Image from "next/image";
 import Table, { Column } from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
@@ -8,6 +8,8 @@ import Dropdown, {
   DropdownItem,
   DropdownDivider,
 } from "@/components/ui/Dropdown";
+import {useSearchParams} from "next/navigation";
+import {authAPI} from "@/api/authAPI";
 
 interface OrderItem {
   token: string;
@@ -37,6 +39,24 @@ export default function Orders() {
   const [hideLowLiq, setHideLowLiq] = useState(false);
   const [hideSmallAsset, setHideSmallAsset] = useState(false);
   const [hideSellOut, setHideSellOut] = useState(false);
+
+  const searchParams = useSearchParams();
+  const params = searchParams.toString();
+  const [orderData, setOrdersData] = useState<any | null>(null);
+
+  useLayoutEffect(() => {
+    const fetchUser = async () => {
+      if (params) {
+        const user = await authAPI.getUser(params);
+        const orderInfo = await user.getOrders();
+        console.log(orderInfo);
+        setOrdersData(orderInfo);
+      }
+
+    }
+
+    fetchUser()
+  }, [params]);
 
   const tabs: TabItem[] = [
     {

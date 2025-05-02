@@ -3,7 +3,9 @@
 import Card from "@/components/ui/Card";
 import Switch from "@/components/ui/Switch";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import {useEffect, useLayoutEffect, useState} from "react";
+import {authAPI} from "@/api/authAPI";
+import {useSearchParams} from "next/navigation";
 
 enum Menu {
   quick_buy = "Quick buy",
@@ -40,6 +42,25 @@ export default function SettingsPage() {
   const [speed, setSpeed] = useState<Speed>(Speed.auto);
   const [selectedQuickBuySettings, setSelectedQuickBuySettings] =
     useState<Settings>(Settings.s1);
+
+
+  const searchParams = useSearchParams();
+  const params = searchParams.toString();
+  const [settingsData, setSettingsData] = useState<any | null>(null);
+
+  useLayoutEffect(() => {
+    const fetchUser = async () => {
+      if (params) {
+        const user = await authAPI.getUser(params);
+        const settings = await user.getSettings();
+        console.log(settings);
+        setSettingsData(settings);
+      }
+
+    }
+
+    fetchUser()
+  }, [params]);
 
   const getSettings = () => {
     switch (selectedMenu) {
@@ -86,7 +107,7 @@ export default function SettingsPage() {
                   </header>
                   <div className="flex gap-2 items-center">
                     <span>
-                      <input className="border-[#716F7A] border w-[100px] p-2 rounded-xl" />
+                      <input value={settingsData?.slippage} className="border-[#716F7A] border w-[100px] p-2 rounded-xl" />
                     </span>
                     <span>%</span>
                   </div>
