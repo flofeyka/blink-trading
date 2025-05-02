@@ -1,4 +1,4 @@
 [submodule "submodule"]
   path = submodule
-  url = https://$GH_TOKEN@github.com/Libra-LTD/blink-sdk.git
+  url = https://github.com/Libra-LTD/blink-sdk.git
 
