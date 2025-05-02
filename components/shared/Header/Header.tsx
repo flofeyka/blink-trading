@@ -1,11 +1,21 @@
+'use client';
+
 import Image from "next/image";
 import Input from "../../ui/Input";
 import NavLink from "../../ui/NavLink";
 import BurgerMenu from "./BurgerMenu";
 import Link from "next/link";
 import Dropdown, {DropdownItem} from "@/components/ui/Dropdown";
+import Button from "@/components/ui/Button";
+import { authAPI } from "@/api/authAPI";
 
 export default function Header() {
+
+  const onRedirect = async () => {
+    const url = await authAPI.generateLink();
+    window.location.href = url;
+  }
+
   return (
     <header className="bg-[#202020] p-3 px-5 flex text-[#A9A9A9] items-center justify-between">
       <div className="flex gap-10 items-center">
@@ -148,9 +158,9 @@ export default function Header() {
           </DropdownItem>
         </Dropdown>
 
-        {/*<div>*/}
-        {/*  <Button className="h-[40px]">CONNECT WALLET</Button>*/}
-        {/*</div>*/}
+        <div>
+          <Button className="h-[40px]" onClick={onRedirect}>CONNECT WALLET</Button>
+        </div>
       </div>
     </header>
   );

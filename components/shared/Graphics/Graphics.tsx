@@ -7,6 +7,8 @@ import BuySell from "./BuySell";
 import Statistics from "./Statistics";
 import Transactions from "./Transactions";
 import Switch from "@/components/ui/Switch";
+import {TradesClient} from "@/submodule/src";
+import {useSearchParams} from "next/navigation";
 
 export default function Graphics() {
     const container: any = useRef(undefined);
@@ -66,6 +68,22 @@ export default function Graphics() {
         if (str.length <= startLength + endLength) return str;
         return `${str.slice(0, startLength)}...${str.slice(-endLength)}`;
     };
+
+    const searchParams = useSearchParams();
+    const params = searchParams.toString();
+
+    useEffect(() => {
+        const fetchWsClient = async () => {
+            console.log(process.env.NEXT_PUBLIC_WS_URL)
+        const client = TradesClient.websocket(process.env.NEXT_PUBLIC_WS_URL!);
+
+        console.log(await client.getTrades({
+            amm: '',
+        }));
+        }
+
+        fetchWsClient();
+    }, [])
 
     return (<div className="flex flex-col gap-5 max-w-full">
         <div className="flex gap-5 max-md:flex-col max-w-full">

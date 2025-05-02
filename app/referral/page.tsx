@@ -1,8 +1,32 @@
+'use client';
+
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Image from "next/image";
+import {useSearchParams} from "next/navigation";
+import {useLayoutEffect, useState} from "react";
+import {authAPI} from "@/api/authAPI";
 
 export default function Referral() {
+
+  const searchParams = useSearchParams();
+  const params = searchParams.toString();
+  const [referralData, setReferralData] = useState<any | null>(null);
+
+  useLayoutEffect(() => {
+    const fetchUser = async () => {
+      if (params) {
+        const user = await authAPI.getUser(params);
+        const referralsInfo = await user.getReferrals();
+        console.log(referralsInfo);
+        setReferralData(referralsInfo);
+      }
+
+    }
+
+    fetchUser()
+  }, [params]);
+
   return (
     <div>
       <div className="w-full flex flex-col items-center mt-10 gap-5">
@@ -40,7 +64,7 @@ export default function Referral() {
                     className="cursor-pointer"
                   />
                 </div>
-                <div>0</div>
+                <div>{referralData?.count}</div>
               </div>
               <div>
                 <div className="text-[#A9A9A9] mb-1 flex gap-1.5">
@@ -74,7 +98,7 @@ export default function Referral() {
                     alt="solan"
                     className="cursor-pointer"
                   />
-                  0
+                  {referralData?.volume}
                 </div>
               </div>
             </div>
