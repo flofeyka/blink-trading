@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build:submodule": "git submodule update --init --recursive && yarn build",
+    "build:submodule": "git config --global url.\\\"https://${GH_TOKEN}:x-oauth-basic@github.com/\\\".insteadOf \\\"https://github.com/\\\" && git submodule update --init --recursive",
     "build": "yarn build:submodule && next build",
     "start": "next start",
     "lint": "next lint"
