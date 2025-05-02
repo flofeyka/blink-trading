@@ -3,7 +3,7 @@
 import Header from "@/components/shared/Header/Header";
 import type {Metadata} from "next";
 import {Geist, Montserrat} from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { authAPI } from "@/api/authAPI";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -36,6 +36,7 @@ export default function RootLayout({
     const fetchUser = async () => {
     if (params) {
       const user = await authAPI.getUser(params);
+      localStorage.setItem('params', params);
 
       console.log(await user.getSettings());
     }

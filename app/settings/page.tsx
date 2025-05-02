@@ -6,6 +6,7 @@ import Image from "next/image";
 import {useEffect, useLayoutEffect, useState} from "react";
 import {authAPI} from "@/api/authAPI";
 import {useSearchParams} from "next/navigation";
+import {UpdateSettingsParams} from "@/submodule/src";
 
 enum Menu {
   quick_buy = "Quick buy",
@@ -29,6 +30,7 @@ enum Speed {
 export default function SettingsPage() {
   const [referralLink, setReferralLink] = useState<string>("");
   const [primaryWallet, setPrimaryWallet] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setReferralLink("P32Us8svisoWHcqGEQ2NLC3tYbypwvL3Vp7qkKcGpump321");
@@ -44,23 +46,42 @@ export default function SettingsPage() {
     useState<Settings>(Settings.s1);
 
 
-  const searchParams = useSearchParams();
-  const params = searchParams.toString();
-  const [settingsData, setSettingsData] = useState<any | null>(null);
+  const [slippage, setSlippage] = useState<number>();
+
+  const handleSettingsChange = async (params: UpdateSettingsParams) => {
+    const user = await authAPI.getUser();
+
+    const updatedSettings = await user.updateSettings(params);
+    setSlippage(updatedSettings.slippage);
+  }
+
+  useEffect(() => {
+    if (!slippage) return;
+
+    const timeout = setTimeout(() => {
+      handleSettingsChange({ slippage });
+    }, 1000);
+
+    return () => clearTimeout(timeout); // Сброс таймера при каждом изменении slippage
+  }, [slippage]);
 
   useLayoutEffect(() => {
     const fetchUser = async () => {
-      if (params) {
-        const user = await authAPI.getUser(params);
+        setLoading(true);
+        const user = await authAPI.getUser();
         const settings = await user.getSettings();
-        console.log(settings);
-        setSettingsData(settings);
-      }
-
+        setSlippage(settings.slippage)
+      setLoading(false);
     }
 
     fetchUser()
-  }, [params]);
+  }, []);
+
+  if(loading) {
+    return <div className={'h-full w-full flex justify-center items-center'}>
+      Loading...
+    </div>
+  }
 
   const getSettings = () => {
     switch (selectedMenu) {
@@ -107,7 +128,7 @@ export default function SettingsPage() {
                   </header>
                   <div className="flex gap-2 items-center">
                     <span>
-                      <input value={settingsData?.slippage} className="border-[#716F7A] border w-[100px] p-2 rounded-xl" />
+                      <input type={'number'} max={100} value={slippage as number} onChange={(e) => setSlippage(Number(e.target.value))} className="border-[#716F7A] border w-[100px] p-2 rounded-xl" />
                     </span>
                     <span>%</span>
                   </div>
