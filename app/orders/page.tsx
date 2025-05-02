@@ -4,11 +4,6 @@ import Image from "next/image";
 import Table, { Column } from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
-import Dropdown, {
-  DropdownItem,
-  DropdownDivider,
-} from "@/components/ui/Dropdown";
-import {useSearchParams} from "next/navigation";
 import {authAPI} from "@/api/authAPI";
 
 interface OrderItem {
@@ -40,23 +35,17 @@ export default function Orders() {
   const [hideSmallAsset, setHideSmallAsset] = useState(false);
   const [hideSellOut, setHideSellOut] = useState(false);
 
-  const searchParams = useSearchParams();
-  const params = searchParams.toString();
   const [orderData, setOrdersData] = useState<any | null>(null);
 
   useLayoutEffect(() => {
     const fetchUser = async () => {
-      if (params) {
-        const user = await authAPI.getUser(params);
+        const user = await authAPI.getUser();
         const orderInfo = await user.getOrders();
-        console.log(orderInfo);
         setOrdersData(orderInfo);
-      }
-
     }
 
     fetchUser()
-  }, [params]);
+  }, []);
 
   const tabs: TabItem[] = [
     {

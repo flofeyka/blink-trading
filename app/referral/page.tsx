@@ -3,21 +3,18 @@
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Image from "next/image";
-import {useSearchParams} from "next/navigation";
-import {useEffect, useLayoutEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {authAPI} from "@/api/authAPI";
 
 export default function Referral() {
 
-  const searchParams = useSearchParams();
-  const params = searchParams.toString();
   const [referralData, setReferralData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true)
-        const user = await authAPI.getUser(params);
+        const user = await authAPI.getUser();
         const referralsInfo = await user.getReferrals();
         console.log(referralsInfo);
         setReferralData(referralsInfo);
@@ -25,7 +22,7 @@ export default function Referral() {
     }
 
     fetchUser()
-  }, [params]);
+  }, []);
 
   if(loading) return <div className={'h-full w-full flex justify-center items-center'}>
     Loading...
