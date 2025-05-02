@@ -20,18 +20,19 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-    <body className={`font-medium ${geistMono.variable}`}>
-    <Suspense fallback={<div>Loading...</div>}>
-        <ClientWrapper/>
-    </Suspense>
-    <div className="min-h-screen pb-10 h-full w-full bg-[#181818] text-white font-medium">
-        <header>
-            <Header/>
-        </header>
-        <main className="px-5 max-md:mt-5 mt-10 max-md:px-2">
-            {children}
-        </main>
-    </div>
-    </body>
-    </html>);
+            <body className={`font-medium ${geistMono.variable}`}>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <ClientWrapper/>
+                </Suspense>
+                <div className="min-h-screen pb-10 h-full w-full bg-[#181818] text-white font-medium">
+                    <header>
+                        <Header/>
+                    </header>
+                    <main className="px-5 max-md:mt-5 mt-10 max-md:px-2">
+                        {children}
+                    </main>
+                </div>
+            </body>
+        </html>
+    );
 }
