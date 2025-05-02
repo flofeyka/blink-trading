@@ -5,7 +5,6 @@ import Switch from "@/components/ui/Switch";
 import Image from "next/image";
 import {useEffect, useLayoutEffect, useState} from "react";
 import {authAPI} from "@/api/authAPI";
-import {useSearchParams} from "next/navigation";
 import {UpdateSettingsParams} from "@/submodule/src";
 
 enum Menu {

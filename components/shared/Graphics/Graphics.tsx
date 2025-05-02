@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import {Suspense, useEffect, useRef, useState} from "react";
 import Card from "../../ui/Card";
 import Image from "next/image";
 import BuySell from "./BuySell";
@@ -11,7 +11,7 @@ import {AssetsClient, GetAssetsInfoResponse, GetTotalsResponse, TradeDirection, 
 import {useParams} from "next/navigation";
 import axios from "axios";
 
-export default function Graphics() {
+function Graphics() {
     const container: any = useRef(undefined);
 
     const [token, setToken] = useState<string>("6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN");
@@ -20,6 +20,7 @@ export default function Graphics() {
 
     const [assetsInfo, setAssetsInfo] = useState<GetAssetsInfoResponse | null>(null);
     const [tokenData, setTokenData] = useState(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
 
     const params = useParams<{ token: string }>();
@@ -29,6 +30,7 @@ export default function Graphics() {
                 console.error('Next public assets url not provided');
                 return;
             }
+            setLoading(true);
             const client = AssetsClient.http(process.env.NEXT_PUBLIC_ASSETS_URL);
             const assets_info = await client.getAssetsInfo([params.token]);
 
@@ -43,6 +45,7 @@ export default function Graphics() {
             //     setTokenData(json);
             // }
             setAssetsInfo(assets_info);
+            setLoading(false);
         }
 
         fetchAssetsClient();
@@ -105,8 +108,9 @@ export default function Graphics() {
     };
 
     if (!assetsInfo || !params.token) {
-        return <div className={'h-full w-full flex justify-center items-center'}>Loading...</div>
+        return <div className={'h-full w-full flex justify-center items-center'}>{loading ? 'Loading...' : 'Token not found'}</div>
     }
+
 
     return (<div className="flex flex-col gap-5 max-w-full">
         <div className="flex gap-5 max-md:flex-col max-w-full">
@@ -304,4 +308,10 @@ export default function Graphics() {
             </div>
         </div>
     </div>);
+}
+
+export default function GraphicsWrapper() {
+    return <Suspense>
+        <Graphics/>
+    </Suspense>
 }
