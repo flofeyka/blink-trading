@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build:submodule": "git config --global url.\\\"https://${GH_TOKEN}:x-oauth-basic@github.com/\\\".insteadOf \\\"https://github.com/\\\" && git submodule update --init --recursive",
+    "build:submodule": "git submodule update --init --recursive && git submodule foreach 'git config submodule.$name.url https://$GH_TOKEN@github.com/Libra-LTD/blink-sdk.git' && yarn build",
     "build": "yarn build:submodule && next build",
     "start": "next start",
     "lint": "next lint"
