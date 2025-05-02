@@ -1,88 +1,57 @@
 "use client";
 
-import { select } from "framer-motion/client";
-import { useState } from "react";
+import {useEffect, useState} from "react";
+import {GetTotalsResponse, Totals, TradesClient} from "@/submodule/src";
 
-export default function Statistics() {
-  const modes = [
-    {
-      id: 1,
-      time: "5M",
-      makers: 0,
-      percent: 0.13,
-      buys: 69,
-      sells: 52,
-      buyVol: 343000,
-      sellVol: 28,
-      buyers: 12,
-      sellers: 2,
-      txns: 105,
-      volume: 551000,
-    },
-    {
-      id: 2,
-      makers: 57,
-      time: "1H",
-      percent: -1.02,
-      buys: 940,
-      sells: 1225,
-      buyVol: 4300000,
-      sellVol: 5900000,
-      buyers: 56,
-      sellers: 59,
-      txns: 1257,
-      volume: 6300000,
-    },
-    {
-      id: 3,
-      makers: 234,
-      time: "6H",
-      percent: -0.74,
-      buys: 3046,
-      sells: 3667,
-      buyVol: 12100000,
-      sellVol: 13800000,
-      buyers: 131,
-      sellers: 176,
-      txns: 6755,
-      volume: 26900000,
-    },
-    {
-      id: 4,
-      makers: 788,
-      time: "24H",
-      percent: 3.34,
-      buys: 14642,
-      sells: 15311,
-      buyVol: 65200000,
-      sellVol: 60300000,
-      buyers: 496,
-      sellers: 469,
-      txns: 29923,
-      volume: 125200000,
-    },
-  ];
+const TIMES = ['5M', '1H', '6H', '24H']
 
-  const [selectedMode, setSelectedMode] = useState(modes[0]);
+export default function Statistics({address}: {address: string}) {
+
+  const [totals, setTotals] = useState<({id: number} & Totals)[]>([]);
+  const [selectedMode, setSelectedMode] = useState<{id: number} & Totals | null>(null);
+
+  useEffect(() => {
+    const fetchWsClient = async () => {
+      console.log(process.env.NEXT_PUBLIC_WS_URL)
+      const client = TradesClient.websocket(process.env.NEXT_PUBLIC_WS_URL!);
+      const total_data = await client.getTotals({
+        amm: address,
+        dir: 0
+      })
+      const totals_formatted = total_data.map((total, index) => ({
+        id: index,
+        ...total
+      }))
+
+      setTotals(totals_formatted);
+      setSelectedMode(totals_formatted[0]);
+    }
+
+    fetchWsClient();
+  }, [address])
+
+  if(!selectedMode) return <></>;
+
+  console.log(totals);
 
   return (
     <div className="rounded-md bg-[#202020] max-md:hidden overflow-hidden">
       <div className="flex justify-stretch ">
-        {modes.map((mode) => (
+        {totals.map((mode, index: number) => (
           <span
-            key={mode.id}
+            key={index}
             onClick={() => setSelectedMode(mode)}
             className={`text-center cursor-pointer overflow-hidden w-full ${
-              mode.id === selectedMode.id ? "bg-[#353535]" : ""
+              selectedMode.id === mode.id ? "bg-[#353535]" : ""
             } border-r border-b border-[#353535] p-3 last:border-r-0`}
           >
-            <div className="text-[12px] text-[#A9A9A9]">{mode.time}</div>
+            <div className="text-[12px] text-[#A9A9A9]">{TIMES[index]}</div>
             <div
               className={`text-[14px] font-semibold ${
-                mode.percent < 0 ? "text-[#00FFA3]" : "text-red-500"
+                mode.price_change_percentage <= 0 ? "text-[#00FFA3]" : "text-red-500"
               }`}
             >
-              {mode.percent}%
+              {mode.price_change_percentage}%
             </div>
           </span>
         ))}
@@ -92,14 +61,14 @@ export default function Statistics() {
           <div className="flex flex-col gap-1">
             <div className="text-[#A9A9A9] text-[12px]">TXNS</div>
             <div>
-              {selectedMode.txns.toLocaleString("en-US")}
+              {(selectedMode.buys + selectedMode.sells).toLocaleString("en-US")}
             </div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-[#A9A9A9] text-[12px]">VOLUME</div>
             <div>
               $
-              {selectedMode.volume.toLocaleString("en-US", {
+              {selectedMode.buys.toLocaleString("en-US", {
                 maximumFractionDigits: 1,
                 notation: "compact",
                 compactDisplay: "short",
@@ -108,7 +77,7 @@ export default function Statistics() {
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-[#A9A9A9] text-[12px]">MAKERS</div>
-            <div>{selectedMode.makers}</div>
+            <div>{(selectedMode.buyers + selectedMode.sellers).toLocaleString('en-US')}</div>
           </div>
         </div>
         <div className="w-full pl-3 flex flex-col gap-2 justify-between text-[14px]">
@@ -141,7 +110,7 @@ export default function Statistics() {
                 <div className="text-[#A9A9A9]">BUY VOL</div>
                 <div>
                   $
-                  {selectedMode.buyVol.toLocaleString("en-US", {
+                  {selectedMode.buyers.toLocaleString("en-US", {
                     maximumFractionDigits: 1,
                     notation: "compact",
                     compactDisplay: "short",
@@ -152,7 +121,7 @@ export default function Statistics() {
                 <div className="text-[#A9A9A9]">SELL VOL</div>
                 <div>
                   $
-                  {selectedMode.sellVol.toLocaleString("en-US", {
+                  {selectedMode.sellers.toLocaleString("en-US", {
                     maximumFractionDigits: 1,
                     notation: "compact",
                     compactDisplay: "short",
@@ -165,8 +134,8 @@ export default function Statistics() {
                 className={`h-full bg-[#00FFA3] rounded-full`}
                 style={{
                   width:
-                    ((selectedMode.buyVol /
-                      (selectedMode.sellVol + selectedMode.sellVol)) *
+                    ((selectedMode.sellers /
+                      (selectedMode.sellers + selectedMode.sells)) *
                       100 || 0) + "%",
                   maxWidth: "100%",
                 }}
