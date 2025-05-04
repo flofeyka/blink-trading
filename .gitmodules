@@ -1,3 +1,0 @@
-[submodule "blink-sdk"]
-	path = submodule
-	url = https://github.com/Libra-LTD/blink-sdk.git

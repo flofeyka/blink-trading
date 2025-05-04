@@ -8,10 +8,15 @@ export const authAPI = {
     },
 
     async getUser(params?: string): Promise<BlinkClient> {
-        console.log(localStorage.getItem('params'))
         const keyPair = await decryptSessionKeyPair(localStorage.getItem("privateKey") || "", params || localStorage.getItem('params') || '');
+        const client =  BlinkClient.http(process.env.NEXT_PUBLIC_API_URL!, keyPair)
 
-        return BlinkClient.http(process.env.NEXT_PUBLIC_API_URL!, keyPair)
+        if(params) {
+            localStorage.setItem('params', params);
+        }
+
+        return client;
+
 
     }
 }

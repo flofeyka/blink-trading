@@ -4,8 +4,8 @@ import Image from "next/image";
 import Table, {Column} from "../../ui/Table";
 import Button from "@/components/ui/Button";
 import SortArrows, {SortDirection} from "@/components/ui/SortArrows";
-import {TradesClient} from "@/submodule/src";
 import {shortenString} from "@/components/shared/Graphics/Graphics";
+import {tradeAPI} from "@/api/tradeAPI";
 
 interface Holding {
   token: string;
@@ -58,7 +58,7 @@ interface Transaction {
   trader: string
 }
 
-export default function Transactions() {
+export default function Transactions({address, direction}: {address: string, direction: number}) {
   const [activeTab, setActiveTab] = useState<string>("transactions");
   const [dateViewMode, setDateViewMode] = useState<"date" | "age">("date");
   const [dateSortDirection, setDateSortDirection] =
@@ -68,16 +68,11 @@ export default function Transactions() {
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const httpClient = TradesClient.http('http://176.9.16.153:8092');
-
-      const transactions = await httpClient.getTrades({
-        amm: '9fmdkQipJK2teeUv53BMDXi52uRLbrEvV38K8GBNkiM7',
-        limit: 10,
-      })
+      const transactions = await tradeAPI.fetchTransactions(address);
 
       setTransactionData(transactions.map(item => ({
         ...item,
-        price: Number(item.output_amount) / Number(item.input_amount)
+        price: direction === item.direction ? Number(item.output_amount) / Number(item.input_amount) : Number(item.input_amount) / Number(item.output_amount)
       })))
     }
 
@@ -681,12 +676,15 @@ export default function Transactions() {
     switch (activeTab) {
       case "transactions":
         return (
+            transactionData.length ?
           <Table
             data={transactionData}
             columns={transactionColumns}
             className="text-[13px] max-md:text-[11px]"
             textColor="#00FFA3"
-          />
+          /> :           <div className="text-center py-4 text-[#A9A9A9]">
+                  No active transactions
+                </div>
         );
       case "holdings":
         return (

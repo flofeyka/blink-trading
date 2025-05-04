@@ -18,12 +18,9 @@ export const shortenString = (str: string, startLength = 3, endLength = 4) => {
 function Graphics() {
     const container: any = useRef(undefined);
 
-    const [token, setToken] = useState<string>("6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN");
-
     const [dataMode, setDataMode] = useState<boolean>(false);
 
     const [assetsInfo, setAssetsInfo] = useState<GetAssetsInfoResponse | null>(null);
-    const [tokenData, setTokenData] = useState(null);
     const [loading, setLoading] = useState<boolean>(false);
 
 
@@ -40,13 +37,13 @@ function Graphics() {
 
             // if(assets_info[0].uri) {
             //     const response = await axios.get(assets_info[0].uri, {
-            //         responseType: 'blob'
+            //         responseType: 'blob',
             //     });
             //
             //     const text = await response.data.text(); // читаем содержимое blob как текст
             //     const json = JSON.parse(text);
             //
-            //     setTokenData(json);
+            //     console.log(text);
             // }
             setAssetsInfo(assets_info);
             setLoading(false);
@@ -55,7 +52,6 @@ function Graphics() {
         fetchAssetsClient();
     }, [])
 
-    console.log(tokenData);
 
     useEffect(() => {
         if (!dataMode) {
@@ -203,7 +199,7 @@ function Graphics() {
                         style={{height: "calc(100% - 32px)", width: "100%"}}
                     ></div>
                 </div>
-                <Transactions/>
+                <Transactions direction={assetsInfo[0].dex_info!.dir} address={assetsInfo[0].dex_info!.address}/>
             </div>)}
 
             <div className="flex md:max-w-[300px] md:min-w-[300px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
@@ -302,7 +298,7 @@ function Graphics() {
                         </div>
                     </div>
                 </Card>
-                <Statistics address={assetsInfo[0].dex_info!.address} token={params.token}/>
+                <Statistics address={assetsInfo[0].dex_info!.address}/>
                 <BuySell setDataMode={setDataMode}/>
             </div>
         </div>
