@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "submodule:build": "git submodule update --init --recursive",
-    "build": "yarn submodule:build && build",
+    "build": "yarn submodule:build && next build",
     "start": "next start",
     "lint": "next lint"
   },
