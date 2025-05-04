@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "submodule:build": "git submodule update --init --recursive",
+    "build": "yarn submodule:build && build",
     "start": "next start",
     "lint": "next lint"
   },
