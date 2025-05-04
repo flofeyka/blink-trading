@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { authAPI } from '@/api/authAPI'; // если такой есть
+import {useEffect} from 'react';
+import {useSearchParams} from 'next/navigation';
+import {authAPI} from '@/api/authAPI'; // если такой есть
 
 export default function ClientWrapper() {
     const searchParams = useSearchParams();
@@ -11,9 +11,7 @@ export default function ClientWrapper() {
     useEffect(() => {
         const fetchUser = async () => {
             if (params) {
-                const user = await authAPI.getUser(params);
-                localStorage.setItem('params', params);
-                console.log(await user.getSettings());
+                await authAPI.getUser(params);
             }
         };
 

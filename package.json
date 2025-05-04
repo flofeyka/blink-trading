@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "Projects": "link:..",
     "axios": "^1.9.0",
+    "blink-sdk": "file:submodule.tgz",
+    "cd": "^0.3.3",
     "charting_library": "^1.0.2",
     "ethers": "^6.13.7",
     "framer-motion": "^12.6.2",

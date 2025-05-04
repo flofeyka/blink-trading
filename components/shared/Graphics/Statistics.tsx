@@ -1,7 +1,8 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import {GetTotalsResponse, Totals, TradesClient} from "@/submodule/src";
+import {Totals} from "@/submodule/src";
+import {tradeAPI} from "@/api/tradeAPI";
 
 const TIMES = ['5M', '1H', '6H', '24H']
 
@@ -12,19 +13,10 @@ export default function Statistics({address}: {address: string}) {
 
   useEffect(() => {
     const fetchWsClient = async () => {
-      console.log(process.env.NEXT_PUBLIC_WS_URL)
-      const client = TradesClient.websocket(process.env.NEXT_PUBLIC_WS_URL!);
-      const total_data = await client.getTotals({
-        amm: address,
-        dir: 0
-      })
-      const totals_formatted = total_data.map((total, index) => ({
-        id: index,
-        ...total
-      }))
+      const totals = await tradeAPI.fetchStatistics(address);
 
-      setTotals(totals_formatted);
-      setSelectedMode(totals_formatted[0]);
+      setTotals(totals);
+      setSelectedMode(totals[0]);
     }
 
     fetchWsClient();

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Switch from "../../ui/Switch";
 import Checkbox from "../../ui/Checkbox";
-import { Dispatch, SetStateAction, useState } from "react";
+import {Dispatch, SetStateAction, useState} from "react";
 import Button from "../../ui/Button";
 
 enum Mode {
