@@ -1,7 +1,7 @@
 "use client";
-import {useLayoutEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Image from "next/image";
-import Table, { Column } from "@/components/ui/Table";
+import Table, {Column} from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
 import {authAPI} from "@/api/authAPI";
@@ -37,11 +37,12 @@ export default function Orders() {
 
   const [orderData, setOrdersData] = useState<any | null>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
         const user = await authAPI.getUser();
         const orderInfo = await user.getOrders();
-        setOrdersData(orderInfo);
+        console.log(orderInfo)
+        setOrdersData(orderInfo.orders);
     }
 
     fetchUser()

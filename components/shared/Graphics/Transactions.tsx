@@ -1,19 +1,11 @@
-import { useState } from "react";
+'use client';
+import {useEffect, useState} from "react";
 import Image from "next/image";
-import Table, { Column } from "../../ui/Table";
+import Table, {Column} from "../../ui/Table";
 import Button from "@/components/ui/Button";
-import SortArrows, { SortDirection } from "@/components/ui/SortArrows";
-
-interface Transaction {
-  date: string;
-  type: "BUY" | "SELL" | "ADD";
-  priceUSD: number;
-  totalUSD: number;
-  priceSOL: number;
-  amount: number;
-  totalSOL: number;
-  maker: string;
-}
+import SortArrows, {SortDirection} from "@/components/ui/SortArrows";
+import {TradesClient} from "@/submodule/src";
+import {shortenString} from "@/components/shared/Graphics/Graphics";
 
 interface Holding {
   token: string;
@@ -54,11 +46,44 @@ interface TabItem {
   icon?: string;
 }
 
+interface Transaction {
+  amm: string
+  block_timestamp: number
+  direction: number
+  index: number
+  price: number;
+  input_amount: bigint
+  output_amount: bigint
+  signature: string
+  trader: string
+}
+
 export default function Transactions() {
   const [activeTab, setActiveTab] = useState<string>("transactions");
   const [dateViewMode, setDateViewMode] = useState<"date" | "age">("date");
   const [dateSortDirection, setDateSortDirection] =
     useState<SortDirection>(null);
+
+  const [transactionData, setTransactionData] = useState<Transaction[]>([]);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const httpClient = TradesClient.http('http://176.9.16.153:8092');
+
+      const transactions = await httpClient.getTrades({
+        amm: '9fmdkQipJK2teeUv53BMDXi52uRLbrEvV38K8GBNkiM7',
+        limit: 10,
+      })
+
+      setTransactionData(transactions.map(item => ({
+        ...item,
+        price: Number(item.output_amount) / Number(item.input_amount)
+      })))
+    }
+
+    fetchTransactions();
+  }, [])
+
 
   const tabs: TabItem[] = [
     {
@@ -85,40 +110,6 @@ export default function Transactions() {
       id: "orders",
       label: "Orders",
       icon: "/icons/orders.svg",
-    },
-  ];
-
-  // Transactions data
-  const transactions: Transaction[] = [
-    {
-      date: "Jan 27 12:34:22",
-      type: "BUY",
-      priceUSD: 0.0045,
-      totalUSD: 0.0,
-      priceSOL: 0.0064,
-      amount: 434,
-      totalSOL: 1.39,
-      maker: "sfg...3dn",
-    },
-    {
-      date: "Jan 27 12:34:22",
-      type: "BUY",
-      priceUSD: 0.0045,
-      totalUSD: 0.0,
-      priceSOL: 0.0064,
-      amount: 434,
-      totalSOL: 0.15,
-      maker: "sfg...3dn",
-    },
-    {
-      date: "Jan 27 12:34:22",
-      type: "ADD",
-      priceUSD: 0.0045,
-      totalUSD: 0.0,
-      priceSOL: 0.0064,
-      amount: 434,
-      totalSOL: 1.1,
-      maker: "sfg...3dn",
     },
   ];
 
@@ -224,6 +215,8 @@ export default function Transactions() {
     },
   ];
 
+  console.log(transactionData);
+
   // Transaction columns
   const transactionColumns: Column<Transaction>[] = [
     {
@@ -260,18 +253,18 @@ export default function Transactions() {
           />
         </div>
       ),
-      key: "date",
+      key: "block_timestamp",
       align: "left",
       minWidth: "180px",
       render: (value) => (
         <span className="text-[#00FFA3]">
-          {dateViewMode === "date" ? value : "5h ago"}
+          {dateViewMode === "date" ? new Date(value * 1000).toLocaleDateString() : `${new Date(Date.now() - value * 1000).getDate()} days ago`}
         </span>
       ),
     },
     {
       header: "TYPE",
-      key: "type",
+      key: "direction",
       align: "left",
       icon: "/icons/sort.svg",
       minWidth: "80px",
@@ -286,67 +279,67 @@ export default function Transactions() {
               : "text-[#00FFA3]"
           }
         >
-          {value}
+          BUY/SELL
         </span>
       ),
     },
     {
       header: "PRICE USD",
-      key: "priceUSD",
+      key: 'price',
       align: "left",
       minWidth: "120px",
       width: "120px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${value.toFixed(4)}</span>
+        <span className="text-[#00FFA3] text-ellipsis w-[120px]">${value.toFixed(2)}</span>
       ),
     },
     {
       header: "TOTAL USD",
-      key: "totalUSD",
+      key: "output_amount",
       align: "left",
       minWidth: "120px",
       width: "120px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${value.toFixed(2)}</span>
+        <span className="text-[#00FFA3]">${(Number(value))}</span>
       ),
     },
     {
       header: "PRICE SOL",
-      key: "priceSOL",
+      key: "input_amount",
       align: "left",
-      minWidth: "120px",
-      width: "120px",
+      minWidth: "130px",
+      width: "130px",
       render: (value) => (
-        <span className="text-[#00FFA3]">{value.toFixed(4)}</span>
+        <span className="text-[#00FFA3]">{(Number(value))}</span>
       ),
     },
     {
       header: "AMOUNT",
-      key: "amount",
+      key: "input_amount",
       align: "left",
-      minWidth: "100px",
-      width: "100px",
+      minWidth: "150px",
+      width: "150px",
       render: (value) => <span className="text-[#00FFA3]">{value}</span>,
     },
     {
       header: "TOTAL SOL",
-      key: "totalSOL",
+      key: "output_amount",
       align: "left",
-      minWidth: "120px",
-      width: "120px",
+      minWidth: "150px",
+      width: "150px",
       render: (value) => (
         <span className="text-[#00FFA3] flex gap-2 items-center">
           <Image src="/icons/solan.svg" width={17} height={17} alt="solan" />{" "}
-          {value.toFixed(2)}
+          {(Number(value))}
         </span>
       ),
     },
     {
       header: "MARKERS",
-      key: "maker",
+      key: "signature",
       align: "left",
-      minWidth: "120px",
-      width: "120px",
+      minWidth: "160px",
+      width: "160px",
       render: (value) => (
         <span className="text-[#00C1E7] flex gap-1 items-center">
           <Image
@@ -355,13 +348,13 @@ export default function Transactions() {
             height={30}
             alt="profile"
           />
-          {value}
+          {shortenString(value)}
         </span>
       ),
     },
     {
       header: "",
-      key: "maker",
+      key: "trader",
       align: "left",
       minWidth: "60px",
       width: "60px",
@@ -425,7 +418,7 @@ export default function Transactions() {
       width: "120px",
       render: (value, row) => (
         <div>
-          <div>${value.toFixed(2)}</div>
+          <div>${+value.toFixed(2)}</div>
           <div className="text-[#A9A9A9]">{row.profitPercent}%</div>
         </div>
       ),
@@ -438,7 +431,7 @@ export default function Transactions() {
       minWidth: "150px",
       width: "150px",
       render: (value) => (
-        <span className="text-[#00FFA3]">+${value.toFixed(2)}</span>
+        <span className="text-[#00FFA3]">+${+value.toFixed(2)}</span>
       ),
     },
     {
@@ -449,7 +442,7 @@ export default function Transactions() {
       minWidth: "130px",
       width: "130px",
       render: (value) => (
-        <span className="text-[#00FFA3]">+${value.toFixed(2)}</span>
+        <span className="text-[#00FFA3]">+${+value.toFixed(2)}</span>
       ),
     },
     {
@@ -460,7 +453,7 @@ export default function Transactions() {
       minWidth: "120px",
       width: "120px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${value.toFixed(2)}</span>
+        <span className="text-[#00FFA3]">${+value.toFixed(2)}</span>
       ),
     },
     {
@@ -471,7 +464,7 @@ export default function Transactions() {
       minWidth: "120px",
       width: "120px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${value.toFixed(2)}</span>
+        <span className="text-[#00FFA3]">${+value.toFixed(2)}</span>
       ),
     },
     {
@@ -482,7 +475,7 @@ export default function Transactions() {
       minWidth: "120px",
       width: "120px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${value.toFixed(2)}</span>
+        <span className="text-[#00FFA3]">${(+value).toFixed(2)}</span>
       ),
     },
     {
@@ -689,7 +682,7 @@ export default function Transactions() {
       case "transactions":
         return (
           <Table
-            data={transactions}
+            data={transactionData}
             columns={transactionColumns}
             className="text-[13px] max-md:text-[11px]"
             textColor="#00FFA3"
@@ -735,9 +728,12 @@ export default function Transactions() {
   };
 
   return (
-    <div className="bg-[#202020] rounded-b-md p-4 overflow-hidden max-md:hidden">
+    <div className="bg-[#202020] p-2 rounded-b-md  max-md:hidden">
       {/* Tabs */}
-      <div className="flex gap-4 border-b border-[#353535] overflow-x-auto">
+      <div className="flex gap-4 border-b border-[#353535] overflow-x-auto" style={{
+        scrollbarWidth: "thin",
+        scrollbarColor: "#444 #222",
+      }}>
         {tabs.map((tab) => (
           <span
             key={tab.id}
@@ -777,7 +773,11 @@ export default function Transactions() {
       </div>
 
       {/* Active Table based on selected tab */}
-      <div className="mt-2 w-full overflow-hidden">{renderTable()}</div>
+      <div className="mt-2 w-full overflow-y-auto h-full max-h-[25vh] relative"
+           style={{
+             scrollbarWidth: "thin",
+             scrollbarColor: "#444 #222",
+           }}>{renderTable()}</div>
     </div>
   );
 }

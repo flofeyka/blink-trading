@@ -7,9 +7,13 @@ import BuySell from "./BuySell";
 import Statistics from "./Statistics";
 import Transactions from "./Transactions";
 import Switch from "@/components/ui/Switch";
-import {AssetsClient, GetAssetsInfoResponse, GetTotalsResponse, TradeDirection, TradesClient} from "@/submodule/src";
+import {AssetsClient, GetAssetsInfoResponse} from "@/submodule/src";
 import {useParams} from "next/navigation";
-import axios from "axios";
+
+export const shortenString = (str: string, startLength = 3, endLength = 4) => {
+    if (str.length <= startLength + endLength) return str;
+    return `${str.slice(0, startLength)}...${str.slice(-endLength)}`;
+};
 
 function Graphics() {
     const container: any = useRef(undefined);
@@ -102,18 +106,13 @@ function Graphics() {
         }
     }, [dataMode, assetsInfo?.length]);
 
-    const shortenString = (str: string, startLength = 3, endLength = 4) => {
-        if (str.length <= startLength + endLength) return str;
-        return `${str.slice(0, startLength)}...${str.slice(-endLength)}`;
-    };
-
     if (!assetsInfo || !params.token) {
         return <div className={'h-full w-full flex justify-center items-center'}>{loading ? 'Loading...' : 'Token not found'}</div>
     }
 
 
     return (<div className="flex flex-col gap-5 max-w-full">
-        <div className="flex gap-5 max-md:flex-col max-w-full">
+        <div className="flex gap-5 max-md:flex-col w-full">
             {dataMode ? (<Card className="text-[12px]">
                 <main className="flex flex-col gap-5">
                     <div className="flex justify-between w-[85%]">
@@ -165,7 +164,7 @@ function Graphics() {
                 </span>
                     </div>
                 </main>
-            </Card>) : (<div className="w-full flex flex-col justify-stretch max-md:w-full overflow-hidden">
+            </Card>) : (<div className="w-full flex flex-col max-md:w-full overflow-hidden">
                 <div
                     className="bg-[#202020] max-md:bg-[#181818] rounded-t-md px-3 p-1 flex items-center justify-between">
               <span className="items-center gap-2  flex">
@@ -303,7 +302,7 @@ function Graphics() {
                         </div>
                     </div>
                 </Card>
-                <Statistics address={assetsInfo[0].dex_info!.address}/>
+                <Statistics address={assetsInfo[0].dex_info!.address} token={params.token}/>
                 <BuySell setDataMode={setDataMode}/>
             </div>
         </div>

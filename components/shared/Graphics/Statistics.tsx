@@ -1,11 +1,11 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import {GetTotalsResponse, Totals, TradesClient} from "@/submodule/src";
+import {Totals, TradesClient} from "@/submodule/src";
 
 const TIMES = ['5M', '1H', '6H', '24H']
 
-export default function Statistics({address}: {address: string}) {
+export default function Statistics({address, token}: {address: string; token: string}) {
 
   const [totals, setTotals] = useState<({id: number} & Totals)[]>([]);
   const [selectedMode, setSelectedMode] = useState<{id: number} & Totals | null>(null);
