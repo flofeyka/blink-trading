@@ -11,7 +11,7 @@
   "dependencies": {
     "Projects": "link:..",
     "axios": "^1.9.0",
-    "blink-sdk": "https://github.com/Libra-LTD/blink-sdk.git",
+    "blink-sdk": "https://github.com/flofeyka/blink-sdk.git",
     "cd": "^0.3.3",
     "charting_library": "^1.0.2",
     "ethers": "^6.13.7",
