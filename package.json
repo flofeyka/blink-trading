@@ -10,6 +10,7 @@
     "preinstall:blink-sdk": "pushd submodule && pnpm pack --pack-destination ../ && popd"
   },
   "dependencies": {
+    "@types/elliptic": "^6.4.18",
     "axios": "^1.9.0",
     "blink-sdk": "file:blink-sdk-1.0.0.tgz",
     "cd": "^0.3.3",

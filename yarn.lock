@@ -407,10 +407,6 @@
   resolved "https://registry.yarnpkg.com/@types/stylis/-/stylis-4.2.5.tgz#1daa6456f40959d06157698a653a9ab0a70281df"
   integrity sha512-1Xve+NMN7FWjY14vLoY5tL3BVEQ/n42YLwaqJIPYhotZ9uBHt87VceMwWQpzmdEt2TNXIorIFG+YeCUUW7RInw==
 
-"Projects@link:..":
-  version "0.0.0"
-  uid ""
-
 aes-js@4.0.0-beta.5:
   version "4.0.0-beta.5"
   resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-4.0.0-beta.5.tgz#8d2452c52adedebc3a3e28465d858c11ca315873"
@@ -440,9 +436,9 @@ base64url@^3.0.1:
   resolved "https://registry.yarnpkg.com/base64url/-/base64url-3.0.1.tgz#6399d572e2bc3f90a9a8b22d5dbb0a32d33f788d"
   integrity sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==
 
-"blink-sdk@https://github.com/flofeyka/blink-sdk.git":
+"blink-sdk@file:blink-sdk-1.0.0.tgz":
   version "1.0.0"
-  resolved "https://github.com/flofeyka/blink-sdk.git#0b5c74f18572cb889c92c3c416b5cafd82f1654f"
+  resolved "file:blink-sdk-1.0.0.tgz#3495ea2a1e868ea68361cd05b78db6b5052b524f"
   dependencies:
     base64url "^3.0.1"
     buffer "^6.0.3"
