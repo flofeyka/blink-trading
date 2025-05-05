@@ -4,12 +4,13 @@ import {useEffect, useState} from "react";
 import {Totals} from "@/submodule/src";
 import {tradeAPI} from "@/lib/api/tradeAPI";
 
-const TIMES = ['5M', '1H', '6H', '24H']
+const TIMES = ["5M", "1H", "6H", "24H"];
 
-export default function Statistics({address}: {address: string}) {
-
-  const [totals, setTotals] = useState<({id: number} & Totals)[]>([]);
-  const [selectedMode, setSelectedMode] = useState<{id: number} & Totals | null>(null);
+export default function Statistics({ address }: { address: string }) {
+  const [totals, setTotals] = useState<({ id: number } & Totals)[]>([]);
+  const [selectedMode, setSelectedMode] = useState<
+    ({ id: number } & Totals) | null
+  >(null);
 
   useEffect(() => {
     const fetchWsClient = async () => {
@@ -17,12 +18,12 @@ export default function Statistics({address}: {address: string}) {
 
       setTotals(totals);
       setSelectedMode(totals[0]);
-    }
+    };
 
     fetchWsClient();
-  }, [address])
+  }, [address]);
 
-  if(!selectedMode) return <></>;
+  if (!selectedMode) return <></>;
 
   console.log(totals);
 
@@ -40,7 +41,9 @@ export default function Statistics({address}: {address: string}) {
             <div className="text-[12px] text-[#A9A9A9]">{TIMES[index]}</div>
             <div
               className={`text-[14px] font-semibold ${
-                mode.price_change_percentage <= 0 ? "text-[#00FFA3]" : "text-red-500"
+                mode.price_change_percentage <= 0
+                  ? "text-[#00FFA3]"
+                  : "text-red-500"
               }`}
             >
               {mode.price_change_percentage.toFixed(2)}%
@@ -69,7 +72,11 @@ export default function Statistics({address}: {address: string}) {
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-[#A9A9A9] text-[12px]">MAKERS</div>
-            <div>{(selectedMode.buyers + selectedMode.sellers).toLocaleString('en-US')}</div>
+            <div>
+              {(selectedMode.buyers + selectedMode.sellers).toLocaleString(
+                "en-US"
+              )}
+            </div>
           </div>
         </div>
         <div className="w-full pl-3 flex flex-col gap-2 justify-between text-[14px]">

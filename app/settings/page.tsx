@@ -1,11 +1,11 @@
 "use client";
 
+import { authAPI } from "@/api/authAPI";
 import Card from "@/components/ui/Card";
 import Switch from "@/components/ui/Switch";
+import { UpdateSettingsParams } from "blink-sdk";
 import Image from "next/image";
-import {useEffect, useLayoutEffect, useState} from "react";
-import {authAPI} from "@/lib/api/authAPI";
-import {UpdateSettingsParams} from "@/submodule/src";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 enum Menu {
   quick_buy = "Quick buy",
@@ -44,7 +44,6 @@ export default function SettingsPage() {
   const [selectedQuickBuySettings, setSelectedQuickBuySettings] =
     useState<Settings>(Settings.s1);
 
-
   const [slippage, setSlippage] = useState<number>();
 
   const handleSettingsChange = async (params: UpdateSettingsParams) => {
@@ -52,7 +51,7 @@ export default function SettingsPage() {
 
     const updatedSettings = await user.updateSettings(params);
     setSlippage(updatedSettings.slippage);
-  }
+  };
 
   useEffect(() => {
     if (!slippage) return;
@@ -66,20 +65,22 @@ export default function SettingsPage() {
 
   useLayoutEffect(() => {
     const fetchUser = async () => {
-        setLoading(true);
-        const user = await authAPI.getUser();
-        const settings = await user.getSettings();
-        setSlippage(settings.slippage)
+      setLoading(true);
+      const user = await authAPI.getUser();
+      const settings = await user.getSettings();
+      setSlippage(settings.slippage);
       setLoading(false);
-    }
+    };
 
-    fetchUser()
+    fetchUser();
   }, []);
 
-  if(loading) {
-    return <div className={'h-full w-full flex justify-center items-center'}>
-      Loading...
-    </div>
+  if (loading) {
+    return (
+      <div className={"h-full w-full flex justify-center items-center"}>
+        Loading...
+      </div>
+    );
   }
 
   const getSettings = () => {
@@ -127,7 +128,13 @@ export default function SettingsPage() {
                   </header>
                   <div className="flex gap-2 items-center">
                     <span>
-                      <input type={'number'} max={100} value={slippage as number} onChange={(e) => setSlippage(Number(e.target.value))} className="border-[#716F7A] border w-[100px] p-2 rounded-xl" />
+                      <input
+                        type={"number"}
+                        max={100}
+                        value={slippage as number}
+                        onChange={(e) => setSlippage(Number(e.target.value))}
+                        className="border-[#716F7A] border w-[100px] p-2 rounded-xl"
+                      />
                     </span>
                     <span>%</span>
                   </div>
