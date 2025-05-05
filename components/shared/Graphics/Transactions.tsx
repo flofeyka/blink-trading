@@ -5,7 +5,8 @@ import Table, {Column} from "../../ui/Table";
 import Button from "@/components/ui/Button";
 import SortArrows, {SortDirection} from "@/components/ui/SortArrows";
 import {shortenString} from "@/components/shared/Graphics/Graphics";
-import {tradeAPI} from "@/api/tradeAPI";
+import {tradeAPI} from "@/lib/api/tradeAPI";
+import Link from "next/link";
 
 interface Holding {
   token: string;
@@ -49,7 +50,7 @@ interface TabItem {
 interface Transaction {
   amm: string
   block_timestamp: number
-  direction: number
+  direction: 'BUY' | 'SELL'
   index: number
   price: number;
   input_amount: bigint
@@ -72,7 +73,8 @@ export default function Transactions({address, direction}: {address: string, dir
 
       setTransactionData(transactions.map(item => ({
         ...item,
-        price: direction === item.direction ? Number(item.output_amount) / Number(item.input_amount) : Number(item.input_amount) / Number(item.output_amount)
+        price: direction === item.direction ? Number(item.output_amount) / Number(item.input_amount) : Number(item.input_amount) / Number(item.output_amount),
+        direction: direction === item.direction ? "BUY" : "SELL",
       })))
     }
 
@@ -274,7 +276,7 @@ export default function Transactions({address, direction}: {address: string, dir
               : "text-[#00FFA3]"
           }
         >
-          BUY/SELL
+          {value}
         </span>
       ),
     },
@@ -349,12 +351,12 @@ export default function Transactions({address, direction}: {address: string, dir
     },
     {
       header: "",
-      key: "trader",
+      key: "signature",
       align: "left",
       minWidth: "60px",
       width: "60px",
-      render: () => (
-        <div className="flex justify-end gap-2">
+      render: (value) => (
+        <Link href={`http://solscan.io/tx/${value}`} className="flex justify-end gap-2">
           {/* <Image
             src="/icons/copy.svg"
             width={15}
@@ -376,7 +378,7 @@ export default function Transactions({address, direction}: {address: string, dir
             alt="sort"
             className="cursor-pointer"
           />
-        </div>
+        </Link>
       ),
     },
   ];

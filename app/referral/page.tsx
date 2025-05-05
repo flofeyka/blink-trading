@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Image from "next/image";
 import {useEffect, useState} from "react";
-import {authAPI} from "@/api/authAPI";
+import {authAPI} from "@/lib/api/authAPI";
 
 export default function Referral() {
 
@@ -66,19 +66,6 @@ export default function Referral() {
                   />
                 </div>
                 <div>{referralData?.count}</div>
-              </div>
-              <div>
-                <div className="text-[#A9A9A9] mb-1 flex gap-1.5">
-                  TRADERS
-                  <Image
-                    src="/icons/disclamer.svg"
-                    width={15}
-                    height={15}
-                    alt="disclamer"
-                    className="cursor-pointer"
-                  />
-                </div>
-                <div>0</div>
               </div>
               <div>
                 <div className="text-[#A9A9A9] mb-1 flex gap-1.5">

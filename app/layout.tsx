@@ -4,6 +4,7 @@ import "./globals.css";
 import React, {Suspense} from "react";
 import {Metadata} from "next";
 import ClientWrapper from "@/layouts/ClientLayout";
+import { ToastContainer } from "react-toastify";
 
 const geistMono = Montserrat({
     variable: "--font-geist-mono", subsets: ["latin"],
@@ -21,6 +22,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`font-medium ${geistMono.variable}`}>
+                <ToastContainer />
                 <Suspense fallback={<div>Loading...</div>}>
                     <ClientWrapper/>
                 </Suspense>

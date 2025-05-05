@@ -9,6 +9,7 @@ import Transactions from "./Transactions";
 import Switch from "@/components/ui/Switch";
 import {AssetsClient, GetAssetsInfoResponse} from "@/submodule/src";
 import {useParams} from "next/navigation";
+import Chart from "@/components/shared/Graphics/Chart";
 
 export const shortenString = (str: string, startLength = 3, endLength = 4) => {
     if (str.length <= startLength + endLength) return str;
@@ -22,7 +23,7 @@ function Graphics() {
 
     const [assetsInfo, setAssetsInfo] = useState<GetAssetsInfoResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
+    const [chartError, setChartError] = useState<string | null>(null);
 
     const params = useParams<{ token: string }>();
     useEffect(() => {
@@ -32,21 +33,36 @@ function Graphics() {
                 return;
             }
             setLoading(true);
-            const client = AssetsClient.http(process.env.NEXT_PUBLIC_ASSETS_URL);
-            const assets_info = await client.getAssetsInfo([params.token]);
-
-            // if(assets_info[0].uri) {
-            //     const response = await axios.get(assets_info[0].uri, {
-            //         responseType: 'blob',
-            //     });
-            //
-            //     const text = await response.data.text(); // читаем содержимое blob как текст
-            //     const json = JSON.parse(text);
-            //
-            //     console.log(text);
-            // }
-            setAssetsInfo(assets_info);
-            setLoading(false);
+            try {
+                const client = AssetsClient.http(process.env.NEXT_PUBLIC_ASSETS_URL);
+                const assets_info = await client.getAssetsInfo([params.token]);
+                
+                console.log('Получена информация о токене:', assets_info);
+                
+                if (!assets_info || assets_info.length === 0) {
+                    console.error('Информация о токене не найдена');
+                    setChartError('Токен не найден');
+                    setLoading(false);
+                    return;
+                }
+                
+                // Проверяем, есть ли информация о DEX
+                if (!assets_info[0].dex_info || !assets_info[0].dex_info.address) {
+                    console.error('Информация о DEX отсутствует или неполная');
+                    setChartError('Информация о DEX отсутствует');
+                    setLoading(false);
+                    return;
+                }
+                
+                console.log('ChainId токена:', assets_info[0].dex_info.address);
+                
+                setAssetsInfo(assets_info);
+            } catch (error) {
+                console.error('Ошибка при получении информации о токене:', error);
+                setChartError('Ошибка при загрузке данных');
+            } finally {
+                setLoading(false);
+            }
         }
 
         fetchAssetsClient();
@@ -97,13 +113,15 @@ function Graphics() {
         }`;
             }
             if (assetsInfo) {
-                container.current.appendChild(script);
+                // container.current.appendChild(script);
             }
         }
     }, [dataMode, assetsInfo?.length]);
 
     if (!assetsInfo || !params.token) {
-        return <div className={'h-full w-full flex justify-center items-center'}>{loading ? 'Loading...' : 'Token not found'}</div>
+        return <div className={'h-full w-full flex justify-center items-center'}>
+            {loading ? 'Загрузка...' : chartError || 'Токен не найден'}
+        </div>
     }
 
 
@@ -189,17 +207,17 @@ function Graphics() {
                 <Switch/> Outlier
               </span>
                 </div>
-                <div
-                    className="tradingview-widget-container"
-                    ref={container}
-                    style={{width: "100%", height: '100%'}}
-                >
-                    <div
-                        className="tradingview-widget-container__widget"
-                        style={{height: "calc(100% - 32px)", width: "100%"}}
-                    ></div>
-                </div>
-                <Transactions direction={assetsInfo[0].dex_info!.dir} address={assetsInfo[0].dex_info!.address}/>
+                {assetsInfo[0].dex_info?.address ? (
+                    <Chart chainId={params.token} tokenSymbol={assetsInfo[0].name} />
+                ) : (
+                    <div className="flex justify-center items-center h-[400px]">
+                        График недоступен: отсутствует адрес DEX
+                    </div>
+                )}
+                <Transactions 
+                    direction={assetsInfo[0].dex_info?.dir || 0} 
+                    address={assetsInfo[0].dex_info?.address || ""} 
+                />
             </div>)}
 
             <div className="flex md:max-w-[300px] md:min-w-[300px] text-[10px] max-md:w-full flex-col gap-5 flex-1">
@@ -281,7 +299,7 @@ function Graphics() {
                   </div>
                   <div className="text-[14px]">
                     $
-                      {(Math.ceil(Number(assetsInfo[0].liquidity))).toLocaleString("en-US", {
+                      {(Number(assetsInfo[0].liquidity) || 0).toLocaleString("en-US", {
                           maximumFractionDigits: 1, notation: "compact", compactDisplay: "short",
                       })}
                   </div>
@@ -290,7 +308,7 @@ function Graphics() {
                   <div className="text-[#A9A9A9] mb-1 text-[12px]">MKT CAP</div>
                   <div className="text-[14px]">
                     $
-                      {(Number(assetsInfo[0].market_cap)).toLocaleString("en-US", {
+                      {(Number(assetsInfo[0].market_cap) || 0).toLocaleString("en-US", {
                           notation: "compact", compactDisplay: "short",
                       })}
                   </div>
@@ -299,7 +317,7 @@ function Graphics() {
                     </div>
                 </Card>
                 <Statistics address={assetsInfo[0].dex_info!.address}/>
-                <BuySell setDataMode={setDataMode}/>
+                <BuySell mint={params.token} setDataMode={setDataMode}/>
             </div>
         </div>
     </div>);

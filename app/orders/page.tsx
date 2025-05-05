@@ -4,7 +4,7 @@ import Image from "next/image";
 import Table, {Column} from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
-import {authAPI} from "@/api/authAPI";
+import {authAPI} from "@/lib/api/authAPI";
 
 interface OrderItem {
   token: string;

@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {Totals} from "@/submodule/src";
-import {tradeAPI} from "@/api/tradeAPI";
+import {tradeAPI} from "@/lib/api/tradeAPI";
 
 const TIMES = ['5M', '1H', '6H', '24H']
 
@@ -43,7 +43,7 @@ export default function Statistics({address}: {address: string}) {
                 mode.price_change_percentage <= 0 ? "text-[#00FFA3]" : "text-red-500"
               }`}
             >
-              {mode.price_change_percentage}%
+              {mode.price_change_percentage.toFixed(2)}%
             </div>
           </span>
         ))}

@@ -2,7 +2,7 @@
 
 import {useEffect} from 'react';
 import {useSearchParams} from 'next/navigation';
-import {authAPI} from '@/api/authAPI'; // если такой есть
+import {authAPI} from '@/lib/api/authAPI'; // если такой есть
 
 export default function ClientWrapper() {
     const searchParams = useSearchParams();
