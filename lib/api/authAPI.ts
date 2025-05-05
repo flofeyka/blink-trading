@@ -1,0 +1,53 @@
+import { BlinkClient, decryptSessionKeyPair, initSession } from "blink-sdk";
+import elliptic from "elliptic";
+
+function toDER(keyPair: elliptic.ec.KeyPair): string {
+    return keyPair.getPrivate('hex');
+}
+
+function fromDER(derKeyPair: string): elliptic.ec.KeyPair {
+    const ec = new elliptic.ec('p256');
+    return ec.keyFromPrivate(derKeyPair, 'hex');
+}
+
+export const authAPI = {
+    async generateLink(): Promise<string> {
+        const {privateKey, url} = await initSession();
+        localStorage.setItem("privateKey", privateKey);
+        return url;
+    },
+
+    async getUser(params?: string): Promise<BlinkClient> {
+        if(params) {
+            localStorage.setItem('params', params);
+        }
+        try {
+            let keyPair;
+            const storedKeyPair = localStorage.getItem('keyPair');
+
+            if (storedKeyPair) {
+                try {
+                    keyPair = fromDER(storedKeyPair);
+                } catch (e) {
+                    console.error('Ошибка при восстановлении keyPair:', e);
+                    localStorage.removeItem('keyPair');
+                }
+            }
+
+            console.log(localStorage.getItem("privateKey"));
+            console.log(localStorage.getItem('params'));
+            console.log(fromDER(localStorage.getItem("privateKey") || ""));
+            if (!keyPair) {
+                keyPair = await decryptSessionKeyPair(localStorage.getItem("privateKey") || "", localStorage.getItem('params') || '');
+                localStorage.setItem('keyPair', toDER(keyPair));
+            }
+
+            const client = BlinkClient.http(process.env.NEXT_PUBLIC_API_URL!, keyPair);
+    
+            return client;
+        } catch(e) {
+            console.error(e);
+            throw new Error("User not found");
+        }
+    }
+}

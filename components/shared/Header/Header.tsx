@@ -7,9 +7,31 @@ import BurgerMenu from "./BurgerMenu";
 import Link from "next/link";
 import Dropdown, {DropdownItem} from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
-import { authAPI } from "@/api/authAPI";
+import {authAPI} from "@/lib/api/authAPI";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function Header() {
+  const [isLogIn, setIsLogIn] = useState<boolean>(false);
+
+  const searchParams = useSearchParams();
+  const params = searchParams.toString();
+  useEffect(() => {
+    console.log(params);
+    const fetchUser = async () => {
+      try {
+        if(params) {
+          const user = await authAPI.getUser(params);
+          console.log(await user.getSettings());
+          setIsLogIn(true);
+        }
+      } catch(e) {
+        console.error(e);
+        setIsLogIn(false);
+      }
+    }
+    fetchUser();
+  }, []);
 
   const onRedirect = async () => {
     const url = await authAPI.generateLink();
@@ -158,9 +180,12 @@ export default function Header() {
           </DropdownItem>
         </Dropdown>
 
-        <div>
-          <Button className="h-[40px]" onClick={onRedirect}>CONNECT WALLET</Button>
-        </div>
+        {!isLogIn && (
+          <div>
+              <Button className="h-[40px]" onClick={onRedirect}>CONNECT TELEGRAM</Button>
+          </div>
+        )}
+        
       </div>
     </header>
   );

@@ -3,8 +3,11 @@
 import Image from "next/image";
 import Switch from "../../ui/Switch";
 import Checkbox from "../../ui/Checkbox";
-import {Dispatch, SetStateAction, useState} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Button from "../../ui/Button";
+import { authAPI } from "@/lib/api/authAPI";
+import { toast } from "react-toastify";
+import { TradesClient } from "blink-sdk";
 
 enum Mode {
   buy = "BUY",
@@ -18,18 +21,80 @@ enum Speed {
 
 type Props = {
   setDataMode: Dispatch<SetStateAction<boolean>>;
+  mint: string;
 };
 
-export default function BuySell({ setDataMode }: Props) {
+export default function BuySell({ setDataMode, mint }: Props) {
   const [isBuyNow, setIsBuyNow] = useState<boolean>(false);
   const [isBuyDip, setIsBuyDip] = useState<boolean>(false);
   const [mode, setMode] = useState<Mode>(Mode.buy);
   const [speedMode, setSpeedMode] = useState<Speed>(Speed.default);
   const [briberyAmount, setBriberyAmount] = useState<number>(0.015);
   const [advancedMode, setAdvancedMode] = useState<boolean>(false);
-
+  const [amount, setAmount] = useState<number>();
   const isAdvancedValid = briberyAmount > 0.015;
+  const [slippage, setSlippage] = useState<number>(100);
 
+  useEffect(() => {
+    const fetchSlippage = async () => {
+      const client = await authAPI.getUser();
+      const slippage = await client.getSettings();
+      setSlippage(slippage.slippage);
+    }
+
+    fetchSlippage();
+  }, []);
+
+  useEffect(() => {
+    setAmount(0);
+  }, [mode])
+
+  const onSwap = async () => {
+    if(!amount) {
+      toast.error("Please enter an amount", {
+        position: 'bottom-right',
+        style: {
+          backgroundColor: '#202020',
+          color: 'white',
+        },
+        autoClose: 2000,
+        pauseOnHover: false,
+      });
+      return;
+    }
+
+    const client = await authAPI.getUser();
+
+    console.log(await client.getSettings());
+
+    toast.info("Swapping...", {
+      position: 'bottom-right',
+      style: {
+        backgroundColor: '#202020',
+        color: 'white',
+      },
+      autoClose: 2000,
+    })
+    const swap = await client.swap({
+      side: mode === Mode.buy ? "buy" : "sell",
+      mint,
+      amount: amount.toString(),
+      slippage,
+      percentile: "_50",
+    });
+
+    if(swap) {
+      toast('Success!', {
+        position: 'bottom-right',
+        style: {
+          backgroundColor: '#202020',
+          color: 'white',
+        },
+      })
+    }
+
+    console.log(swap);
+  }
   const getBuySell = () => {
     switch (mode) {
       case Mode.buy:
@@ -58,92 +123,56 @@ export default function BuySell({ setDataMode }: Props) {
                   height={30}
                   alt="cardholder"
                 />
-                <span>
-                  <span className="absolute ml-3 mt-3">
-                    <Image
-                      src="/icons/solan.svg"
-                      width={15}
-                      height={15}
-                      alt="search"
-                    />
+                 <button onClick={() => setAmount(0.25)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                  <span>
+                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
                   </span>
-                  <input
-                    placeholder="0.25"
-                    className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
-                  />
-                </span>
-                <span>
-                  <span className="absolute ml-3 mt-3">
-                    <Image
-                      src="/icons/solan.svg"
-                      width={15}
-                      height={15}
-                      alt="search"
-                    />
+                  <span className="flex justify-self-center w-full">
+                    0.25
                   </span>
-                  <input
-                    placeholder="0.5"
-                    className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
-                  />
-                </span>
-                <span>
-                  <span className="absolute ml-3 mt-3">
-                    <Image
-                      src="/icons/solan.svg"
-                      width={15}
-                      height={15}
-                      alt="search"
-                    />
+                </button>
+                <button onClick={() => setAmount(0.5)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                  <span>
+                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
                   </span>
-                  <input
-                    placeholder="1"
-                    className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
-                  />
-                </span>
+                  <span className="flex justify-self-center w-full">
+                    0.5
+                  </span>
+                </button>
+                <button onClick={() => setAmount(1)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                  <span>
+                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                  </span>
+                  <span className="flex justify-self-center w-full">
+                    1
+                  </span>
+                </button>
               </div>
               <div className="flex gap-3 max-md:hidden">
-                <span>
-                  <span className="absolute ml-3 mt-3">
-                    <Image
-                      src="/icons/solan.svg"
-                      width={15}
-                      height={15}
-                      alt="search"
-                    />
+                <button onClick={() => setAmount(2)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                  <span>
+                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
                   </span>
-                  <input
-                    placeholder="2"
-                    className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
-                  />
-                </span>
-                <span>
-                  <span className="absolute ml-3 mt-3">
-                    <Image
-                      src="/icons/solan.svg"
-                      width={15}
-                      height={15}
-                      alt="search"
-                    />
+                  <span className="flex justify-self-center w-full">
+                    2
                   </span>
-                  <input
-                    placeholder="5"
-                    className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
-                  />
-                </span>
-                <span>
-                  <span className="absolute ml-3 mt-3">
-                    <Image
-                      src="/icons/solan.svg"
-                      width={15}
-                      height={15}
-                      alt="search"
-                    />
+                </button>
+                <button onClick={() => setAmount(5)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                  <span>
+                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
                   </span>
-                  <input
-                    placeholder="10"
-                    className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
-                  />
-                </span>
+                  <span className="flex justify-self-center w-full">
+                    5
+                  </span>
+                </button>
+                <button onClick={() => setAmount(10)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                  <span>
+                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                  </span>
+                  <span className="flex justify-self-center w-full">
+                    10
+                  </span>
+                </button>
               </div>
               <div className="max-md:flex gap-2 justify-stretch items-center w-full">
                 <Image
@@ -164,6 +193,8 @@ export default function BuySell({ setDataMode }: Props) {
                     />
                   </span>
                   <input
+                    value={amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
                     placeholder="Amount to buy in SOL"
                     className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
                   />
@@ -245,6 +276,8 @@ export default function BuySell({ setDataMode }: Props) {
                     </option>
                   </select>
                   <input
+                    value={amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
                     placeholder="Amount to sell in SOL"
                     className="border-[#716F7A] rounded-l-none pl-2 border-2 p-2 w-full rounded-xl"
                   />
@@ -263,7 +296,7 @@ export default function BuySell({ setDataMode }: Props) {
       case Mode.buy:
         return (
           <div>
-            <Button className="w-full h-10 flex font-semibold justify-center items-center gap-2.5 text-xl">
+            <Button onClick={onSwap} className="w-full h-10 flex font-semibold justify-center items-center gap-2.5 text-xl">
               <span>
                 <Image
                   src="/icons/blink.svg"
@@ -272,13 +305,13 @@ export default function BuySell({ setDataMode }: Props) {
                   height={25}
                 />
               </span>
-              <span>QUICK BUY</span>
+              <span>SWAP</span>
             </Button>
           </div>
         );
       case Mode.sell:
         return (
-          <Button className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-center font-semibold w-full gap-2.5">
+          <Button onClick={onSwap} className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-center font-semibold w-full gap-2.5">
             <span>
               <Image
                 src="/icons/blink.svg"
@@ -302,12 +335,10 @@ export default function BuySell({ setDataMode }: Props) {
           <span
             key={modeItem}
             onClick={() => setMode(modeItem)}
-            className={`text-center justify-stretch w-full cursor-pointer ${
-              mode === modeItem ? "bg-[#353535]" : "bg-[#202020]"
-            } ${
-              index + 1 === Object.values(Mode).length &&
+            className={`text-center justify-stretch w-full cursor-pointer ${mode === modeItem ? "bg-[#353535]" : "bg-[#202020]"
+              } ${index + 1 === Object.values(Mode).length &&
               "max-md:rounded-tr-md z-20"
-            } border-r border-b border-[#353535] p-3`}
+              } border-r border-b border-[#353535] p-3`}
           >
             <div className="text-[14px] text-[#A9A9A9] flex items-center justify-center gap-3">
               <span>
@@ -394,11 +425,10 @@ export default function BuySell({ setDataMode }: Props) {
                   <span
                     onClick={() => setSpeedMode(speed)}
                     key={speed}
-                    className={`w-full flex justify-center cursor-pointer border-2 rounded-md p-2 ${
-                      speed === speedMode
+                    className={`w-full flex justify-center cursor-pointer border-2 rounded-md p-2 ${speed === speedMode
                         ? "border-[#AEFF00] text-[#AEFF00]"
                         : "border-[#716F7A]"
-                    }`}
+                      }`}
                   >
                     {speed}
                   </span>

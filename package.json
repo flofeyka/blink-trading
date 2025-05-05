@@ -14,12 +14,15 @@
     "blink-sdk": "file:blink-sdk-1.0.0.tgz",
     "cd": "^0.3.3",
     "charting_library": "^1.0.2",
+    "elliptic": "^6.6.1",
     "ethers": "^6.13.7",
     "framer-motion": "^12.6.2",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "set-interval-async": "^3.0.3"
+    "react-toastify": "^11.0.5",
+    "set-interval-async": "^3.0.3",
+    "styled-components": "^6.1.17"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

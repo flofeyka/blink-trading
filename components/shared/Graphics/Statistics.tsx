@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Totals } from "blink-sdk";
-import { tradeAPI } from "@/api/tradeAPI";
+import {useEffect, useState} from "react";
+import {tradeAPI} from "@/lib/api/tradeAPI";
+import { Totals } from "@/submodule/src";
 
 const TIMES = ["5M", "1H", "6H", "24H"];
 
@@ -46,7 +46,7 @@ export default function Statistics({ address }: { address: string }) {
                   : "text-red-500"
               }`}
             >
-              {mode.price_change_percentage}%
+              {mode.price_change_percentage.toFixed(2)}%
             </div>
           </span>
         ))}
