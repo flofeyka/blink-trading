@@ -1,8 +1,8 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import {Totals} from "@/submodule/src";
 import {tradeAPI} from "@/lib/api/tradeAPI";
+import { Totals } from "@/submodule/src";
 
 const TIMES = ["5M", "1H", "6H", "24H"];
 

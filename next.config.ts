@@ -2,17 +2,20 @@ import type {NextConfig} from "next";
 
 const nextConfig: NextConfig = {
     webpack: (config) => {
-        // Игнорируем все ошибки при сборке
+        // Ignore all build errors
         config.ignoreWarnings = [
-            // Игнорируем любые ошибки, связанные с TypeScript
+            // Ignore any TypeScript related errors
             /Could not find a declaration file for module 'elliptic'/,
             /Type error:/,
         ];
 
-        // Дополнительно: показываем только ошибки (игнорируем предупреждения)
+        // Additionally: show only errors (ignore warnings)
         config.stats = 'errors-only';
 
         return config;
+    },
+    images: {
+        domains: ['shdw-drive.genesysgo.net'],
     },
 }
 

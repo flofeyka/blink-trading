@@ -20,9 +20,11 @@ export default function Header() {
     console.log(params);
     const fetchUser = async () => {
       try {
-        const user = await authAPI.getUser(params);
-        await user.getSettings();
-        setIsLogIn(true);
+        if(params) {
+          const user = await authAPI.getUser(params);
+          console.log(await user.getSettings());
+          setIsLogIn(true);
+        }
       } catch(e) {
         console.error(e);
         setIsLogIn(false);

@@ -1,4 +1,3 @@
-import { BlinkClient } from "@/submodule/src";
 import { GetCandlesticksParams, SwapParams, TradesClient } from "blink-sdk";
 import { authAPI } from "./authAPI";
 

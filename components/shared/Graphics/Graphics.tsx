@@ -1,7 +1,7 @@
 "use client";
 
 import Switch from "@/components/ui/Switch";
-import { AssetsClient, GetAssetsInfoResponse } from "blink-sdk";
+import { AssetsClient, GetAssetsInfoResponse, TokenMetadata } from "blink-sdk";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -23,6 +23,7 @@ function Graphics() {
     const [assetsInfo, setAssetsInfo] = useState<GetAssetsInfoResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [chartError, setChartError] = useState<string | null>(null);
+    const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null);
 
     const params = useParams<{ token: string }>();
     useEffect(() => {
@@ -36,33 +37,41 @@ function Graphics() {
                 const client = AssetsClient.http(process.env.NEXT_PUBLIC_ASSETS_URL);
                 const assets_info = await client.getAssetsInfo([params.token]);
                 
-                console.log('Получена информация о токене:', assets_info);
+                console.log('Token information received:', assets_info);
                 
                 if (!assets_info || assets_info.length === 0) {
-                    console.error('Информация о токене не найдена');
-                    setChartError('Токен не найден');
+                    console.error('Token information not found');
+                    setChartError('Token not found');
                     setLoading(false);
                     return;
                 }
                 
                 // Проверяем, есть ли информация о DEX
                 if (!assets_info[0].dex_info || !assets_info[0].dex_info.address) {
-                    console.error('Информация о DEX отсутствует или неполная');
-                    setChartError('Информация о DEX отсутствует');
+                    setChartError('DEX information is missing');
                     setLoading(false);
                     return;
                 }
                 
-                console.log('ChainId токена:', assets_info[0].dex_info.address);
+                console.log('Token ChainId:', assets_info[0].dex_info.address);
+
+                if(assets_info[0].uri) {
+                    const metadata = await client.getTokenMetadata(assets_info[0].uri);
+                    console.log('Metadata:', metadata);
+
+                    setTokenMetadata(metadata);
+                }
                 
                 setAssetsInfo(assets_info);
             } catch (error) {
-                console.error('Ошибка при получении информации о токене:', error);
-                setChartError('Ошибка при загрузке данных');
+                console.error('Error getting token information:', error);
+                setChartError('Error loading data');
             } finally {
                 setLoading(false);
             }
         }
+
+        fetchAssetsClient();
     }, [params.token]);
 
   useEffect(() => {
@@ -131,15 +140,15 @@ function Graphics() {
             <main className="flex flex-col gap-5">
               <div className="flex justify-between w-[85%]">
                 <span className="text-[#A9A9A9]">Price USD / SOL</span>
-                <span>$0.031245 / 0.052355</span>
+                <span>{Number(assetsInfo[0].price_usd).toFixed(4)} / {Number(assetsInfo[0].price).toFixed(4)}</span>
               </div>
               <div className="flex justify-between w-[85%]">
                 <span className="text-[#A9A9A9]">Liquidity</span>
-                <span>$45K</span>
+                <span>{Number(assetsInfo[0].liquidity).toFixed(4)}</span>
               </div>
               <div className="flex justify-between w-[85%]">
                 <span className="text-[#A9A9A9]">MKT Cap</span>
-                <span>$124.45K</span>
+                <span>{Number(assetsInfo[0].market_cap).toFixed(4)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#A9A9A9]">Invested/Sold</span>
@@ -194,14 +203,14 @@ function Graphics() {
                 </span>
                 <span>
                   <Image
-                    src="/images/trump.jpg"
+                    src={tokenMetadata?.image || "/icons/trump.svg"}
                     className="w-[30px] h-[30px] object-right-top rounded-full bg-[#3D3D3D]"
                     height={30}
                     width={30}
-                    alt="trump"
+                    alt="coin"
                   />
                 </span>
-                <span>$TRUMP/USDC</span>
+                <span>{assetsInfo[0].name}/USDC</span>
               </span>
 
               <span className="space-x-3 text-[#716F7A]">
@@ -229,7 +238,7 @@ function Graphics() {
           <Card className="font-medium max-md:hidden">
             <div className="flex border-b border-[#353535] gap-2 pb-3">
               <img
-                src={assetsInfo[0].uri || "/icons/trump.svg"}
+                src={tokenMetadata?.image || "/icons/trump.svg"}
                 className="w-[40px] h-[40px] object-cover object-right-top rounded-full bg-[#3D3D3D]"
                 height={30}
                 width={30}
@@ -287,22 +296,22 @@ function Graphics() {
 
             <div className="flex justify-between py-3 border-b border-[#353535]">
               <span>
-                <div className="text-[#A9A9A9] mb-1 text-[12px]">LP BURNED</div>
-                <div className="text-[14px]">$0.0045354</div>
+                <div className="text-[#A9A9A9] mb-1 text-[12px]">PRICE USD</div>
+                <div className="text-[14px]">${Number(assetsInfo[0].price_usd).toFixed(4)}</div>
               </span>
               <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">PRICE SOL</div>
-                <div className="text-[14px]">$8.0109 USDC</div>
+                <div className="text-[14px]">${Number(assetsInfo[0].price).toFixed(4)} USDC</div>
               </span>
               <span>
                 <div className="text-[#A9A9A9] mb-1 text-[12px]">SUPPLY</div>
                 <div className="text-[14px]">
-                  {Number(assetsInfo[0].supply).toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                    notation: "compact",
-                    compactDisplay: "short",
-                  })}
-                  B
+                    { (Number(assetsInfo[0].supply) / Math.pow(10, assetsInfo[0].decimals)).toLocaleString("en-US", {
+                        maximumFractionDigits: 1,
+                        notation: "compact",
+                        compactDisplay: "short",
+                    })}
+                  
                 </div>
               </span>
             </div>
@@ -335,8 +344,6 @@ function Graphics() {
                 <Statistics address={assetsInfo[0].dex_info!.address}/>
                 <BuySell mint={params.token} setDataMode={setDataMode}/>
             </div>
-            <Statistics address={assetsInfo[0].dex_info!.address} />
-            <BuySell mint={params.token} setDataMode={setDataMode} />
         </div>
     </div>
   );   
