@@ -4,15 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "submodule:build": "git submodule update --init --recursive",
-    "build": "yarn submodule:build && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preinstall:blink-sdk": "pushd submodule && pnpm pack --pack-destination ../ && popd"
   },
   "dependencies": {
-    "Projects": "link:..",
     "axios": "^1.9.0",
-    "blink-sdk": "https://github.com/flofeyka/blink-sdk.git",
+    "blink-sdk": "file:blink-sdk-1.0.0.tgz",
     "cd": "^0.3.3",
     "charting_library": "^1.0.2",
     "ethers": "^6.13.7",
