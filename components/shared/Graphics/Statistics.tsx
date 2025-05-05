@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {tradeAPI} from "@/lib/api/tradeAPI";
-import { Totals } from "@/submodule/src";
+import { Totals } from "blink-sdk";
 
 const TIMES = ["5M", "1H", "6H", "24H"];
 
