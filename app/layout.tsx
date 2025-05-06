@@ -3,8 +3,7 @@ import {Montserrat} from "next/font/google";
 import "./globals.css";
 import React, {Suspense} from "react";
 import {Metadata} from "next";
-import ClientWrapper from "@/layouts/ClientLayout";
-import { ToastContainer } from "react-toastify";
+import {ToastContainer} from "react-toastify";
 
 const geistMono = Montserrat({
     variable: "--font-geist-mono", subsets: ["latin"],
@@ -19,22 +18,20 @@ export default function RootLayout({
                                    }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return (
-        <html lang="en">
-            <body className={`font-medium ${geistMono.variable}`}>
-                <ToastContainer />
-                {/* <Suspense fallback={<div>Loading...</div>}>
+    return (<html lang="en">
+        <body className={`font-medium ${geistMono.variable}`}>
+        <ToastContainer/>
+        <Suspense fallback={<div>Loading...</div>}>
+            {/* <Suspense fallback={<div>Loading...</div>}>
                     <ClientWrapper/>
                 </Suspense> */}
-                <div className="min-h-screen pb-10 h-full w-full bg-[#181818] text-white font-medium">
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <Header/>
-                    </Suspense>
-                    <main className="px-5 max-md:mt-5 mt-10 max-md:px-2">
-                        {children}
-                    </main>
-                </div>
-            </body>
-        </html>
-    );
+            <div className="min-h-screen pb-10 h-full w-full bg-[#181818] text-white font-medium">
+                <Header/>
+                <main className="px-5 max-md:mt-5 mt-10 max-md:px-2">
+                    {children}
+                </main>
+            </div>
+        </Suspense>
+        </body>
+        </html>);
 }
