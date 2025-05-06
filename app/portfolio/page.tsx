@@ -1,26 +1,8 @@
-'use client';
-
 import Card from "@/components/ui/Card";
 import Image from "next/image";
 import PortfolioTable from "@/components/shared/Portfolio/PortfolioTable";
-import { useEffect } from "react";
-import { useState } from "react";
-import { tradeAPI } from "@/lib/api/tradeAPI";
 
 export default function Portfolio() {
-
-  const [positions, setPositions] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchPositions = async () => {
-      const positions = await tradeAPI.getPositions();
-      setPositions(positions);
-    }
-
-    fetchPositions();
-  }, []);
-
-  console.log(positions);
 
   return (
     <div className="flex flex-col gap-5">

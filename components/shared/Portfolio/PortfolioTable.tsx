@@ -1,26 +1,12 @@
 "use client";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Image from "next/image";
-import Table, { Column } from "../../ui/Table";
+import Table, {Column} from "../../ui/Table";
 import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
-
-interface PortfolioItem {
-  token: string;
-  lastActive: string;
-  unrealized: number;
-  realizedProfit: number;
-  totalProfit: number;
-  balance: number;
-  bought: {
-    amount: number;
-    price: number;
-  };
-  sold: {
-    amount: number;
-    price: number;
-  };
-}
+import {tradeAPI} from "@/lib/api/tradeAPI";
+import {authAPI} from "@/api/authAPI";
+import {toast} from "react-toastify";
 
 interface TabItem {
   id: string;
@@ -34,6 +20,47 @@ export default function PortfolioTable() {
   const [hideSmallAsset, setHideSmallAsset] = useState(false);
   const [hideSellOut, setHideSellOut] = useState(false);
 
+  const [positions, setPositions] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchPositions = async () => {
+      const positions = await tradeAPI.getPositions();
+      setPositions(positions.map(position => ({
+        ...position,
+        avg_price: {
+          price_token: position.avg_price,
+          price_usd: position.avg_price_usd
+        },
+        price: {
+          price_token: position.price,
+          price_usd: position.price_usd
+        },
+        balance: {
+          balance_ui_token: position.balance_ui,
+          balance_ui_usd: position.balance_ui_usd
+        },
+        pnl: {
+          pnl_usd: position.pnl_usd,
+          pnl_percent: position.pnl_percent
+        }
+      })));
+    }
+
+    fetchPositions();
+  }, []);
+
+  const onWithdraw = async (mint: string) => {
+    const client = await authAPI.getUser()
+
+    toast('Waiting for withdraw...', {autoClose: 1000})
+    await client.withdraw({
+      mint, amount: '1', recipient: 'test-recipient'
+    })
+    toast('Success!', {autoClose: 1000});
+
+    setPositions(prev => prev.filter(pos => pos.mint !== mint));
+  }
+  
   const tabs: TabItem[] = [
     {
       id: "holdings",
@@ -45,26 +72,7 @@ export default function PortfolioTable() {
     },
   ];
 
-  const portfolioData: PortfolioItem[] = [
-    {
-      token: "WHALE",
-      lastActive: "4.4M",
-      unrealized: 13.54,
-      realizedProfit: 11.34,
-      totalProfit: 24.88,
-      balance: 13.43,
-      bought: {
-        amount: 5555.44,
-        price: 0.0055,
-      },
-      sold: {
-        amount: 55.44,
-        price: 0.0055,
-      },
-    },
-  ];
-
-  const columns: Column<PortfolioItem>[] = [
+  const columns: Column<any>[] = [
     {
       header: "TOKEN / LAST ACTIVE",
       key: "token",
@@ -75,49 +83,23 @@ export default function PortfolioTable() {
         <div className="flex items-center gap-2">
           <div className="w-[30px] h-[30px] rounded-full bg-[#3D3D3D]" />
           <div>
-            <div>{row.token}</div>
+            <div>{row.name}</div>
             <div className="text-[#A9A9A9] text-xs">{row.lastActive}</div>
           </div>
         </div>
       ),
     },
     {
-      header: "UNREALIZED",
-      key: "unrealized",
+      header: "UNREALIZED PnL",
+      key: "pnl",
       sortable: true,
+      align: "left",
       minWidth: "130px",
-      align: "left",
       render: (value) => (
-        <span>
-          <div>$0</div>
-          <div className="text-[#00FFA3]"> +{value.toFixed(2)}%</div>
-        </span>
-      ),
-    },
-    {
-      header: "REALIZED PROFIT",
-      key: "realizedProfit",
-      sortable: true,
-      minWidth: "150px",
-      align: "left",
-      render: (value) => (
-        <span className="text-[#00FFA3]">
-          <div>+$33.4k</div>
-          <div>+4K%</div>
-        </span>
-      ),
-    },
-    {
-      header: "TOTAL PROFIT",
-      key: "totalProfit",
-      sortable: true,
-      minWidth: "130px",
-      align: "left",
-      render: (value) => (
-        <span className="text-[#00FFA3]">
-          <div>+$33.4k</div>
-          <div>+4K%</div>
-        </span>
+        <div className="flex flex-col ">
+          <div>{parseFloat(value.pnl_percent).toFixed(3)}%</div>
+          <div className="text-[#A9A9A9] text-xs">${parseFloat(value.pnl_usd).toFixed(3)}</div>
+        </div>
       ),
     },
     {
@@ -128,34 +110,34 @@ export default function PortfolioTable() {
       minWidth: "130px",
       render: (value) => (
         <div className="flex flex-col ">
-          <div>$35.43</div>
-          <div className="text-[#A9A9A9] text-xs">4.8M</div>
+          <div>{parseFloat(value.balance_ui_token).toFixed(3)}</div>
+          <div className="text-[#A9A9A9] text-xs">${parseFloat(value.balance_ui_usd).toFixed(3)}</div>
         </div>
       ),
     },
     {
-      header: "BOUGHT",
-      key: "bought",
+      header: "ENTRY PRICE",
+      key: "avg_price",
       sortable: true,
       align: "left",
       minWidth: "130px",
       render: (value) => (
         <div className="flex flex-col">
-          <div>$355.54</div>
-          <div className="text-[#A9A9A9] text-xs">$0.042355</div>
+          <div>{parseFloat(value.price_token).toFixed(3)}</div>
+          <div className="text-[#A9A9A9] text-xs">${parseFloat(value.price_usd).toFixed(3)}</div>
         </div>
       ),
     },
     {
-      header: "SOLD",
-      key: "sold",
+      header: "CURRENT PRICE",
+      key: "price",
       sortable: true,
       align: "left",
-      minWidth: "130px",
+      minWidth: "150px",
       render: (value) => (
         <div className="flex flex-col">
-          <div>$35.5k</div>
-          <div className="text-[#A9A9A9] text-xs">$0.0005</div>
+          <div>{parseFloat(value.price_token).toFixed(3)}</div>
+          <div className="text-[#A9A9A9] text-xs">${parseFloat(value.price_usd).toFixed(3)}</div>
         </div>
       ),
     },
@@ -179,12 +161,12 @@ export default function PortfolioTable() {
     },
     {
       header: "",
-      key: "token",
+      key: "mint",
       align: "right",
       minWidth: "180px",
-      render: () => (
+      render: (value) => (
         <div className="flex justify-end gap-2 items-center">
-          <Button className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-end font-semibold gap-2.5">
+          <Button onClick={() => onWithdraw(value)} className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-end font-semibold gap-2.5">
             <span>
               <Image
                 src="/icons/blink.svg"
@@ -254,7 +236,7 @@ export default function PortfolioTable() {
 
       <div className="mt-2">
         <Table
-          data={portfolioData}
+          data={positions}
           columns={columns}
           className="text-[13px] max-md:text-[11px]"
         />

@@ -1,4 +1,4 @@
-import { BlinkClient, decryptSessionKeyPair, initSession } from "blink-sdk";
+import {BlinkClient, decryptSessionKeyPair, initSession} from "blink-sdk";
 import elliptic from "elliptic";
 
 function toDER(keyPair: elliptic.ec.KeyPair): string {
@@ -29,7 +29,6 @@ export const authAPI = {
                 try {
                     keyPair = fromDER(storedKeyPair);
                 } catch (e) {
-                    console.error('Ошибка при восстановлении keyPair:', e);
                     localStorage.removeItem('keyPair');
                 }
             }
@@ -38,7 +37,11 @@ export const authAPI = {
             console.log(localStorage.getItem('params'));
             console.log(fromDER(localStorage.getItem("privateKey") || ""));
             if (!keyPair) {
-                keyPair = await decryptSessionKeyPair(localStorage.getItem("privateKey") || "", localStorage.getItem('params') || '');
+                keyPair = await decryptSessionKeyPair(localStorage.getItem("privateKey") || "", params || localStorage.getItem('params') || '').catch(() => {
+                    localStorage.removeItem('keyPair')
+                    throw new Error('Error');
+                });
+
                 localStorage.setItem('keyPair', toDER(keyPair));
             }
 
@@ -46,6 +49,7 @@ export const authAPI = {
     
             return client;
         } catch(e) {
+            localStorage.removeItem('keyPair');
             console.error(e);
             throw new Error("User not found");
         }
