@@ -33,12 +33,11 @@ export const authAPI = {
                 }
             }
 
-            console.log(localStorage.getItem("privateKey"));
-            console.log(localStorage.getItem('params'));
-            console.log(fromDER(localStorage.getItem("privateKey") || ""));
             if (!keyPair) {
                 keyPair = await decryptSessionKeyPair(localStorage.getItem("privateKey") || "", params || localStorage.getItem('params') || '').catch(() => {
-                    localStorage.removeItem('keyPair')
+                    localStorage.removeItem('keyPair');
+                    localStorage.removeItem('privateKey');
+                    localStorage.removeItem('params');
                     throw new Error('Error');
                 });
 
@@ -46,6 +45,8 @@ export const authAPI = {
             }
 
             const client = BlinkClient.http(process.env.NEXT_PUBLIC_API_URL!, keyPair);
+
+            await client.getSettings()
     
             return client;
         } catch(e) {

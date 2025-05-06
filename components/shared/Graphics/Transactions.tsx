@@ -287,7 +287,9 @@ export default function Transactions({address, direction}: {address: string, dir
       minWidth: "120px",
       width: "120px",
       render: (value) => (
-        <span className="text-[#00FFA3] text-ellipsis w-[120px]">${value.toFixed(2)}</span>
+        <span className="text-[#00FFA3] text-ellipsis w-[120px]">${value.toLocaleString('en-US', {
+          notation: 'compact', compactDisplay: 'short'
+        })}</span>
       ),
     },
     {
@@ -297,7 +299,9 @@ export default function Transactions({address, direction}: {address: string, dir
       minWidth: "120px",
       width: "120px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${(Number(value))}</span>
+        <span className="text-[#00FFA3]">${(Number(value).toLocaleString('en-US', {
+          notation: 'compact', compactDisplay: 'short'
+        }))}</span>
       ),
     },
     {
@@ -307,7 +311,9 @@ export default function Transactions({address, direction}: {address: string, dir
       minWidth: "130px",
       width: "130px",
       render: (value) => (
-        <span className="text-[#00FFA3]">{(Number(value))}</span>
+        <span className="text-[#00FFA3]">{(Number(value).toLocaleString('en-US', {
+          notation: 'compact', compactDisplay: 'short'
+        }))}</span>
       ),
     },
     {
@@ -316,7 +322,9 @@ export default function Transactions({address, direction}: {address: string, dir
       align: "left",
       minWidth: "150px",
       width: "150px",
-      render: (value) => <span className="text-[#00FFA3]">{value}</span>,
+      render: (value) => <span className="text-[#00FFA3]">{Number(value).toLocaleString('en-US', {
+        notation: 'compact', compactDisplay: 'short'
+      })}</span>,
     },
     {
       header: "TOTAL SOL",
@@ -327,7 +335,9 @@ export default function Transactions({address, direction}: {address: string, dir
       render: (value) => (
         <span className="text-[#00FFA3] flex gap-2 items-center">
           <Image src="/icons/solan.svg" width={17} height={17} alt="solan" />{" "}
-          {(Number(value))}
+          {(Number(value).toLocaleString('en-US', {
+            notation: 'compact', compactDisplay: 'short'
+          }))}
         </span>
       ),
     },

@@ -1,9 +1,9 @@
-import { GetCandlesticksParams, SwapParams, TradesClient } from "blink-sdk";
-import { authAPI } from "./authAPI";
+import {GetCandlesticksParams, SwapParams, TradesClient} from "blink-sdk";
+import {authAPI} from "./authAPI";
 
 export const tradeAPI = {
     getClient(): TradesClient {
-        return TradesClient.http(`http://${process.env.NEXT_PUBLIC_TRADES_URL}`);
+        return TradesClient.http(`https://${process.env.NEXT_PUBLIC_TRADES_URL}`);
     },
 
     async fetchTransactions(address: string){
