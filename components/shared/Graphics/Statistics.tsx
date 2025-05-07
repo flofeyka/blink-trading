@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {tradeAPI} from "@/lib/api/tradeAPI";
-import { Totals } from "blink-sdk";
+import {Totals} from "blink-sdk";
 
 const TIMES = ["5M", "1H", "6H", "24H"];
 
@@ -41,7 +41,7 @@ export default function Statistics({ address }: { address: string }) {
             <div className="text-[12px] text-[#A9A9A9]">{TIMES[index]}</div>
             <div
               className={`text-[14px] font-semibold ${
-                mode.price_change_percentage <= 0
+                mode.price_change_percentage >= 0
                   ? "text-[#00FFA3]"
                   : "text-red-500"
               }`}

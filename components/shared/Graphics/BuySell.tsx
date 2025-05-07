@@ -3,11 +3,10 @@
 import Image from "next/image";
 import Switch from "../../ui/Switch";
 import Checkbox from "../../ui/Checkbox";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import Button from "../../ui/Button";
-import { authAPI } from "@/lib/api/authAPI";
-import { toast } from "react-toastify";
-import { TradesClient } from "blink-sdk";
+import {authAPI} from "@/lib/api/authAPI";
+import {toast} from "react-toastify";
 
 enum Mode {
   buy = "BUY",
@@ -194,7 +193,8 @@ export default function BuySell({ setDataMode, mint }: Props) {
                   </span>
                   <input
                     value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
+                    onChange={(e) => setAmount(parseFloat(e.target.value))}
+                    type={"number"}
                     placeholder="Amount to buy in SOL"
                     className="border-[#716F7A] pl-9 border-2 p-2 w-full rounded-xl"
                   />
@@ -277,7 +277,8 @@ export default function BuySell({ setDataMode, mint }: Props) {
                   </select>
                   <input
                     value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
+                    type={'number'}
+                    onChange={(e) => setAmount(parseFloat(e.target.value))}
                     placeholder="Amount to sell in SOL"
                     className="border-[#716F7A] rounded-l-none pl-2 border-2 p-2 w-full rounded-xl"
                   />
@@ -457,7 +458,7 @@ export default function BuySell({ setDataMode, mint }: Props) {
                         value={briberyAmount}
                         type="number"
                         onChange={(e) =>
-                          setBriberyAmount(Number(e.target.value))
+                          setBriberyAmount(parseFloat(e.target.value))
                         }
                       />
                     </span>
