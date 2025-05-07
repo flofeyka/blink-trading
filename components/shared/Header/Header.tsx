@@ -8,8 +8,8 @@ import Link from "next/link";
 import Dropdown, {DropdownItem} from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import {authAPI} from "@/lib/api/authAPI";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import {useEffect, useState} from "react";
+import {useSearchParams} from "next/navigation";
 
 export default function Header() {
   const [isLogIn, setIsLogIn] = useState<boolean>(false);
@@ -35,7 +35,8 @@ export default function Header() {
 
   const onRedirect = async () => {
     const url = await authAPI.generateLink();
-    window.location.href = url;
+
+    window.open(url, "_blank");
   }
 
   return (
