@@ -2,7 +2,7 @@
 
 import {useEffect} from 'react';
 import {useSearchParams} from 'next/navigation';
-import {authAPI} from '@/lib/api/authAPI'; // если такой есть
+import {userAPI} from '@/lib/api/userAPI'; // если такой есть
 
 export default function ClientWrapper() {
     const searchParams = useSearchParams();
@@ -11,7 +11,7 @@ export default function ClientWrapper() {
     useEffect(() => {
         const fetchUser = async () => {
             if (params) {
-                await authAPI.getUser(params);
+                await userAPI.getUser(params);
             }
         };
 

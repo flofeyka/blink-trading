@@ -1,11 +1,11 @@
 "use client";
 
-import { authAPI } from "@/api/authAPI";
+import {userAPI} from "@/lib/api/userAPI";
 import Card from "@/components/ui/Card";
 import Switch from "@/components/ui/Switch";
-import { UpdateSettingsParams } from "blink-sdk";
+import {UpdateSettingsParams} from "blink-sdk";
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useState } from "react";
+import {useEffect, useLayoutEffect, useState} from "react";
 
 enum Menu {
   quick_buy = "Quick buy",
@@ -47,7 +47,7 @@ export default function SettingsPage() {
   const [slippage, setSlippage] = useState<number>();
 
   const handleSettingsChange = async (params: UpdateSettingsParams) => {
-    const user = await authAPI.getUser();
+    const user = await userAPI.getUser();
 
     const updatedSettings = await user.updateSettings(params);
     setSlippage(updatedSettings.slippage);
@@ -66,7 +66,7 @@ export default function SettingsPage() {
   useLayoutEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
-      const user = await authAPI.getUser();
+      const user = await userAPI.getUser();
       const settings = await user.getSettings();
       setSlippage(settings.slippage);
       setLoading(false);

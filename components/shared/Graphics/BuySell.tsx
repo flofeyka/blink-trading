@@ -5,7 +5,7 @@ import Switch from "../../ui/Switch";
 import Checkbox from "../../ui/Checkbox";
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import Button from "../../ui/Button";
-import {authAPI} from "@/lib/api/authAPI";
+import {userAPI} from "@/lib/api/userAPI";
 import {toast} from "react-toastify";
 
 enum Mode {
@@ -36,7 +36,7 @@ export default function BuySell({ setDataMode, mint }: Props) {
 
   useEffect(() => {
     const fetchSlippage = async () => {
-      const client = await authAPI.getUser();
+      const client = await userAPI.getUser();
       const slippage = await client.getSettings();
       setSlippage(slippage.slippage);
     }
@@ -52,28 +52,20 @@ export default function BuySell({ setDataMode, mint }: Props) {
     if(!amount) {
       toast.error("Please enter an amount", {
         position: 'bottom-right',
-        style: {
-          backgroundColor: '#202020',
-          color: 'white',
-        },
         autoClose: 2000,
         pauseOnHover: false,
       });
       return;
     }
 
-    const client = await authAPI.getUser();
+    const client = await userAPI.getUser();
 
     console.log(await client.getSettings());
 
     toast.info("Swapping...", {
       position: 'bottom-right',
-      style: {
-        backgroundColor: '#202020',
-        color: 'white',
-      },
-      autoClose: 2000,
     })
+    try {
     const swap = await client.swap({
       side: mode === Mode.buy ? "buy" : "sell",
       mint,
@@ -91,8 +83,10 @@ export default function BuySell({ setDataMode, mint }: Props) {
         },
       })
     }
-
-    console.log(swap);
+    } catch(e) {
+      console.error(e);
+      toast.error(e instanceof Error ? e.message : 'Error during swap');
+    }
   }
   const getBuySell = () => {
     switch (mode) {

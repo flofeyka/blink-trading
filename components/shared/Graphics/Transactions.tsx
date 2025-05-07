@@ -4,9 +4,11 @@ import Image from "next/image";
 import Table, {Column} from "../../ui/Table";
 import Button from "@/components/ui/Button";
 import SortArrows, {SortDirection} from "@/components/ui/SortArrows";
-import {shortenString} from "@/components/shared/Graphics/Graphics";
 import {tradeAPI} from "@/lib/api/tradeAPI";
 import Link from "next/link";
+import {timeAgo} from "@/lib/utils/ageDate";
+import {shortenString} from "@/lib/utils/shortenString";
+import {TradesClient} from "blink-sdk";
 
 interface Holding {
     token: string;
@@ -51,12 +53,22 @@ interface Transaction {
     amm: string
     block_timestamp: number
     direction: 'BUY' | 'SELL'
+    color: string;
     index: number
     price: number;
     input_amount: bigint
     output_amount: bigint
     signature: string
     trader: string
+}
+
+const formatTransactionData = (transactions: any[], direction: number) => {
+    return transactions.map(item => ({
+        ...item,
+        price: direction === item.direction ? Number(item.output_amount) / Number(item.input_amount) : Number(item.input_amount) / Number(item.output_amount),
+        direction: direction === item.direction ? "BUY" : "SELL",
+        color: direction === item.direction ? '[#00FFA3]' : 'red-500'
+    }))
 }
 
 export default function Transactions({address, direction}: { address: string, direction: number }) {
@@ -73,11 +85,7 @@ export default function Transactions({address, direction}: { address: string, di
             try {
                 const transactions = await tradeAPI.fetchTransactions(address);
 
-                setTransactionData(transactions.map(item => ({
-                    ...item,
-                    price: direction === item.direction ? Number(item.output_amount) / Number(item.input_amount) : Number(item.input_amount) / Number(item.output_amount),
-                    direction: direction === item.direction ? "BUY" : "SELL",
-                })))
+                setTransactionData(formatTransactionData(transactions, direction));
 
             } catch (e) {
                 console.error(e);
@@ -87,6 +95,28 @@ export default function Transactions({address, direction}: { address: string, di
         }
 
         fetchTransactions();
+    }, [])
+
+    useEffect(() => {
+        let isData = true;
+
+        const fetchSocket = async () => {
+            const client = TradesClient.websocket(`wss://${process.env.NEXT_PUBLIC_TRADES_URL}`);
+
+            await client.subscribeTrades({
+                amm: address
+            }, (result) => {
+                setTransactionData(prev => [...formatTransactionData([result], direction), ...prev]);
+            })
+        }
+
+        if(isData) {
+            fetchSocket();
+        }
+
+        return () => {
+            isData = false;
+        }
     }, [])
 
 
@@ -206,8 +236,14 @@ export default function Transactions({address, direction}: { address: string, di
         key: "block_timestamp",
         align: "left",
         minWidth: "180px",
-        render: (value) => (<span className="text-[#00FFA3]">
-          {dateViewMode === "date" ? new Date(value * 1000).toLocaleDateString() : `${new Date(Date.now() - value * 1000).getDate()} days ago`}
+        render: (value) => (<span>
+          {dateViewMode === "date" ? new Date(value * 1000).toLocaleString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              second: 'numeric',
+          }).replace('at', '') : `${timeAgo(value)}`}
         </span>),
     }, {
         header: "TYPE",
@@ -216,9 +252,7 @@ export default function Transactions({address, direction}: { address: string, di
         icon: "/icons/sort.svg",
         minWidth: "80px",
         width: "80px",
-        render: (value) => (<span
-                className={value === "BUY" ? "text-[#00FFA3]" : value === "SELL" ? "text-red-500" : "text-[#00FFA3]"}
-            >
+        render: (value) => (<span>
           {value}
         </span>),
     }, {
@@ -227,7 +261,7 @@ export default function Transactions({address, direction}: { address: string, di
         align: "left",
         minWidth: "120px",
         width: "120px",
-        render: (value) => (<span className="text-[#00FFA3] text-ellipsis w-[120px]">${value.toLocaleString('en-US', {
+        render: (value) => (<span className=" text-ellipsis w-[120px]">${value.toLocaleString('en-US', {
                 notation: 'compact', compactDisplay: 'short'
             })}</span>),
     }, {
@@ -236,7 +270,7 @@ export default function Transactions({address, direction}: { address: string, di
         align: "left",
         minWidth: "120px",
         width: "120px",
-        render: (value) => (<span className="text-[#00FFA3]">${(Number(value).toLocaleString('en-US', {
+        render: (value) => (<span>${(Number(value).toLocaleString('en-US', {
                 notation: 'compact', compactDisplay: 'short'
             }))}</span>),
     }, {
@@ -245,7 +279,7 @@ export default function Transactions({address, direction}: { address: string, di
         align: "left",
         minWidth: "130px",
         width: "130px",
-        render: (value) => (<span className="text-[#00FFA3]">{(Number(value).toLocaleString('en-US', {
+        render: (value) => (<span>{(Number(value).toLocaleString('en-US', {
                 notation: 'compact', compactDisplay: 'short'
             }))}</span>),
     }, {
@@ -254,7 +288,7 @@ export default function Transactions({address, direction}: { address: string, di
         align: "left",
         minWidth: "150px",
         width: "150px",
-        render: (value) => <span className="text-[#00FFA3]">{Number(value).toLocaleString('en-US', {
+        render: (value) => <span>{Number(value).toLocaleString('en-US', {
             notation: 'compact', compactDisplay: 'short'
         })}</span>,
     }, {
@@ -263,7 +297,7 @@ export default function Transactions({address, direction}: { address: string, di
         align: "left",
         minWidth: "150px",
         width: "150px",
-        render: (value) => (<span className="text-[#00FFA3] flex gap-2 items-center">
+        render: (value) => (<span className="flex gap-2 items-center">
           <Image src="/icons/solan.svg" width={17} height={17} alt="solan"/>{" "}
                 {(Number(value).toLocaleString('en-US', {
                     notation: 'compact', compactDisplay: 'short'
@@ -353,7 +387,7 @@ export default function Transactions({address, direction}: { address: string, di
         sortable: true,
         minWidth: "150px",
         width: "150px",
-        render: (value) => (<span className="text-[#00FFA3]">+${+value.toFixed(2)}</span>),
+        render: (value) => (<span>+${+value.toFixed(2)}</span>),
     }, {
         header: "TOTAL PROFIT",
         key: "totalProfit",
