@@ -4,7 +4,7 @@ import Image from "next/image";
 import Table, {Column} from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
-import {authAPI} from "@/lib/api/authAPI";
+import {userAPI} from "@/lib/api/userAPI";
 
 interface OrderItem {
   token: string;
@@ -39,7 +39,7 @@ export default function Orders() {
 
   useEffect(() => {
     const fetchUser = async () => {
-        const user = await authAPI.getUser();
+        const user = await userAPI.getUser();
         const orderInfo = await user.getOrders();
         console.log(orderInfo)
         setOrdersData(orderInfo.orders);

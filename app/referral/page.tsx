@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Image from "next/image";
 import {useEffect, useState} from "react";
-import {authAPI} from "@/lib/api/authAPI";
+import {userAPI} from "@/lib/api/userAPI";
 
 export default function Referral() {
 
@@ -14,7 +14,7 @@ export default function Referral() {
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true)
-        const user = await authAPI.getUser();
+        const user = await userAPI.getUser();
         const referralsInfo = await user.getReferrals();
         console.log(referralsInfo);
         setReferralData(referralsInfo);

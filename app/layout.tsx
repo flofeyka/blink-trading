@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
     return (<html lang="en">
         <body className={`font-medium ${geistMono.variable}`}>
-        <ToastContainer/>
+        <ToastContainer theme={'dark'} autoClose={1500}/>
         <Suspense fallback={<div>Loading...</div>}>
             {/* <Suspense fallback={<div>Loading...</div>}>
                     <ClientWrapper/>

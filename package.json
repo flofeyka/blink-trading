@@ -14,7 +14,7 @@
     "axios": "^1.9.0",
     "blink-sdk": "file:blink-sdk-1.0.0.tgz",
     "cd": "^0.3.3",
-    "charting_library": "^1.0.2",
+    "charting_library": "file:public/charting_library",
     "elliptic": "^6.6.1",
     "ethers": "^6.13.7",
     "framer-motion": "^12.6.2",
