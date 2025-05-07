@@ -13,6 +13,7 @@ import {useSearchParams} from "next/navigation";
 
 export default function Header() {
   const [isLogIn, setIsLogIn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const searchParams = useSearchParams();
   const params = searchParams.toString();
@@ -28,6 +29,8 @@ export default function Header() {
       } catch(e) {
         console.error(e);
         setIsLogIn(false);
+      } finally {
+        setLoading(false)
       }
     }
     fetchUser();
@@ -69,31 +72,32 @@ export default function Header() {
         <BurgerMenu />
       </div>
 
+
       <div className="flex items-center gap-5 max-md:hidden">
-        <Dropdown
-          dropdownClassName="p-5 text-sm w-full"
-          trigger={
-            <Image
-              src="/icons/default_avatar.svg"
-              width={45}
-              height={40}
-              className="cursor-pointer h-full"
-              alt="default avatar"
-            />
-          }
-          align={"right"}
+        {!loading ? (isLogIn ?         <Dropdown
+            dropdownClassName="p-5 text-sm w-full"
+            trigger={
+              <Image
+                  src="/icons/default_avatar.svg"
+                  width={45}
+                  height={40}
+                  className="cursor-pointer h-full"
+                  alt="default avatar"
+              />
+            }
+            align={"right"}
         >
           <DropdownItem>
             <Link
-              href="/referral"
-              className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
+                href="/referral"
+                className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
             >
               <span>
                 <Image
-                  src="/icons/referral.svg"
-                  width={20}
-                  height={20}
-                  alt="referral"
+                    src="/icons/referral.svg"
+                    width={20}
+                    height={20}
+                    alt="referral"
                 />
               </span>
               <span>REFERRAL TRACKING</span>
@@ -101,15 +105,15 @@ export default function Header() {
           </DropdownItem>
           <DropdownItem>
             <Link
-              href="/"
-              className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
+                href="/"
+                className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
             >
               <span>
                 <Image
-                  src="/icons/wallet.svg"
-                  width={20}
-                  height={20}
-                  alt="wallet"
+                    src="/icons/wallet.svg"
+                    width={20}
+                    height={20}
+                    alt="wallet"
                 />
               </span>
               <span>WALLET MANAGEMENT</span>
@@ -117,15 +121,15 @@ export default function Header() {
           </DropdownItem>
           <DropdownItem>
             <Link
-              href="/settings"
-              className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
+                href="/settings"
+                className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
             >
               <span>
                 <Image
-                  src="/icons/dropdown_settings.svg"
-                  width={20}
-                  height={20}
-                  alt="settings"
+                    src="/icons/dropdown_settings.svg"
+                    width={20}
+                    height={20}
+                    alt="settings"
                 />
               </span>
               <span>SETTINGS</span>
@@ -133,15 +137,15 @@ export default function Header() {
           </DropdownItem>
           <DropdownItem>
             <Link
-              href="/"
-              className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
+                href="/"
+                className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
             >
               <span>
                 <Image
-                  src="/icons/documentation.svg"
-                  width={20}
-                  height={20}
-                  alt="settings"
+                    src="/icons/documentation.svg"
+                    width={20}
+                    height={20}
+                    alt="settings"
                 />
               </span>
               <span>DOCUMENTATION</span>
@@ -149,15 +153,15 @@ export default function Header() {
           </DropdownItem>
           <DropdownItem className="border-b border-[#353535] ">
             <Link
-              href="/"
-              className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
+                href="/"
+                className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
             >
               <span>
                 <Image
-                  src="/icons/language.svg"
-                  width={20}
-                  height={20}
-                  alt="language"
+                    src="/icons/language.svg"
+                    width={20}
+                    height={20}
+                    alt="language"
                 />
               </span>
               <span>LANGUAGE</span>
@@ -165,28 +169,27 @@ export default function Header() {
           </DropdownItem>
           <DropdownItem>
             <Link
-              href="/"
-              className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
+                href="/"
+                className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
             >
               <span>
                 <Image
-                  src="/icons/logout.svg"
-                  width={20}
-                  height={20}
-                  alt="language"
+                    src="/icons/logout.svg"
+                    width={20}
+                    height={20}
+                    alt="language"
                 />
               </span>
               <span>LOGOUT</span>
             </Link>
           </DropdownItem>
-        </Dropdown>
-
-        {!isLogIn && (
-          <div>
+        </Dropdown> : <div>
               <Button className="h-[40px]" onClick={onRedirect}>CONNECT TELEGRAM</Button>
-          </div>
-        )}
-        
+          </div>) : <span>Loading...</span>
+        }
+
+
+
       </div>
     </header>
   );
