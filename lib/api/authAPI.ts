@@ -36,8 +36,6 @@ export const authAPI = {
             if (!keyPair) {
                 keyPair = await decryptSessionKeyPair(localStorage.getItem("privateKey") || "", params || localStorage.getItem('params') || '').catch(() => {
                     localStorage.removeItem('keyPair');
-                    localStorage.removeItem('privateKey');
-                    localStorage.removeItem('params');
                     throw new Error('Error');
                 });
 
