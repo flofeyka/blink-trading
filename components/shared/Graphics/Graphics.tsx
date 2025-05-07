@@ -1,6 +1,6 @@
 "use client";
 
-import {AssetsClient, GetAssetsInfoResponse, TokenMetadata, TradesClient,} from "blink-sdk";
+import {AssetsClient, DataFeed, GetAssetsInfoResponse, TokenMetadata, TradesClient} from "blink-sdk";
 import {useParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import {tradeAPI} from "@/lib/api/tradeAPI";
@@ -11,7 +11,6 @@ import BuySell from "@/components/shared/Graphics/BuySell";
 import Statistics from "@/components/shared/Graphics/Statistics";
 import Transactions from "@/components/shared/Graphics/Transactions";
 import {ResolutionString, widget} from "charting_library";
-import {DataFeed} from "@/submodule/src";
 import {shortenString} from "@/lib/utils/shortenString";
 
 export default function Graphics() {
