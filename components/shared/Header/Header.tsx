@@ -67,10 +67,15 @@ export default function Header() {
         fetchUser();
     }, []);
 
-    const onRedirect = async () => {
+    const onRedirect = async (): Promise<void> => {
         const url = await userAPI.generateLink();
 
         window.open(url, "_blank");
+    }
+
+    const onLogout = () => {
+        userAPI.logout();
+        setIsLogIn(false);
     }
 
     return (<header className="bg-[#202020] p-3 px-5 flex text-[#A9A9A9] items-center justify-between">
@@ -205,8 +210,8 @@ export default function Header() {
                         </Link>
                     </DropdownItem>
                     <DropdownItem>
-                        <Link
-                            href="/"
+                        <button
+                            onClick={onLogout}
                             className="flex gap-3 items-center text-[11px] text-[#A9A9A9]"
                         >
               <span>
@@ -218,7 +223,7 @@ export default function Header() {
                 />
               </span>
                             <span>LOGOUT</span>
-                        </Link>
+                        </button>
                     </DropdownItem>
                 </Dropdown> : <div>
                     <Button className="h-[40px]" onClick={onRedirect}>CONNECT TELEGRAM</Button>

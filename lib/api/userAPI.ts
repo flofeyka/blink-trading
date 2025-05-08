@@ -62,5 +62,10 @@ export const userAPI = {
     } catch(e) {
       throw e;
     }
+  },
+
+
+  logout(): void {
+    return localStorage.clear();
   }
 };
