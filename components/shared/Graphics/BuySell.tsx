@@ -31,7 +31,7 @@ export default function BuySell({ setDataMode, mint }: Props) {
   const [speedMode, setSpeedMode] = useState<Speed>(Speed.default);
   const [briberyAmount, setBriberyAmount] = useState<number>(0.015);
   const [advancedMode, setAdvancedMode] = useState<boolean>(false);
-  const [amount, setAmount] = useState<number>();
+  const [amount, setAmount] = useState<number>(0);
   const isAdvancedValid = briberyAmount > 0.015;
   const [slippage, setSlippage] = useState<number>(100);
 
@@ -75,9 +75,7 @@ export default function BuySell({ setDataMode, mint }: Props) {
 
       const wsClient = await userAPI.getUser(undefined, "wss");
 
-      console.log("haha");
       return await wsClient.subscribeTransactionsStatuses((result) => {
-        console.log("ws");
         toast(result.status.status);
       });
 

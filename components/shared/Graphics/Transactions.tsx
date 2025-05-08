@@ -83,7 +83,7 @@ const formatTransactionData = (
   return transactions.map((item) => ({
     ...item,
     side: item.side,
-    signature: item.raw.signature,
+    signature: item.raw?.signature,
     trader: item.raw.trader,
     block_timestamp: item.raw.block_timestamp,
     color: item.side === "buy" ? "[#00FFA3]" : "red-500",
@@ -145,6 +145,7 @@ export default function Transactions({
           decimals
         );
 
+        console.log(transactions);
         setTopTraders(formatTopTradersData(topTrades));
         setTransactionData(
           formatTransactionData(transactions, price_sol, price_usd)
