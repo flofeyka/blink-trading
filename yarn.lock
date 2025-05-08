@@ -438,10 +438,11 @@ base64url@^3.0.1:
 
 "blink-sdk@file:blink-sdk-1.0.0.tgz":
   version "1.0.0"
-  resolved "file:blink-sdk-1.0.0.tgz#3495ea2a1e868ea68361cd05b78db6b5052b524f"
+  resolved "file:blink-sdk-1.0.0.tgz#d2a5e7c20784bbd2d075552820ca2d08694dbc40"
   dependencies:
     base64url "^3.0.1"
     buffer "^6.0.3"
+    charting_library "link:C:/Users/danil/AppData/Local/Yarn/Cache/v6/.tmp/f385c049447906f48db33de31240d4b3/charting_library"
     elliptic "^6.6.1"
     ws "^8.18.1"
     zod "^3.24.2"
@@ -496,6 +497,10 @@ cd@^0.3.3:
 
 "charting_library@file:public/charting_library":
   version "0.1.0"
+
+"charting_library@link:C:/Users/danil/AppData/Local/Yarn/Cache/v6/.tmp/f385c049447906f48db33de31240d4b3/charting_library":
+  version "0.0.0"
+  uid ""
 
 client-only@0.0.1:
   version "0.0.1"
@@ -657,11 +662,11 @@ form-data@^4.0.0:
     mime-types "^2.1.12"
 
 framer-motion@^12.6.2:
-  version "12.10.3"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.10.3.tgz#007a1329112a27e2f937053c96663a0b11efbd46"
-  integrity sha512-0uhqfcq4fmzCNV2lJAVAgrWHP4aegzELNd874AxyF3JeIpdUnOXRRJn2AYXnlrrV3rvgZOPBN9Tcjm1VnjZmPA==
+  version "12.10.4"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.10.4.tgz#4afdd3af2ae44b52d3425a78faff36948091f4a5"
+  integrity sha512-gGkavMW3QFDCxI+adVu5sn2NtIRHYPGVLDSJ0S/6B0ZoxPaql2F9foWdg9sGIP6sPA8cbNDfxYf9VlhD3+FkVQ==
   dependencies:
-    motion-dom "^12.10.3"
+    motion-dom "^12.10.4"
     motion-utils "^12.9.4"
     tslib "^2.4.0"
 
@@ -855,10 +860,10 @@ minimalistic-crypto-utils@^1.0.1:
   resolved "https://registry.yarnpkg.com/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz#f6c00c1c0b082246e5c4d99dfb8c7c083b2b582a"
   integrity sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==
 
-motion-dom@^12.10.3:
-  version "12.10.3"
-  resolved "https://registry.yarnpkg.com/motion-dom/-/motion-dom-12.10.3.tgz#aece4e64095ec476809eb4b225233f0694321fcb"
-  integrity sha512-eSkiFTmHB6NlAMQISXPHrwJbqdxlaDXV5R+5oXu18tMgEIblLybLJc7Jq5L+byoE2uEG07rXvDdzHYzHd03ywQ==
+motion-dom@^12.10.4:
+  version "12.10.4"
+  resolved "https://registry.yarnpkg.com/motion-dom/-/motion-dom-12.10.4.tgz#079bf43162b866840bb1d78368de0568b7fb0329"
+  integrity sha512-GSv8kz0ANFfeGrFKi99s3GQjLiL1IKH3KtSNEqrPiVbloHVRiNbNtpsYQq9rkV2AV+7jxvd1X1ObUMVDnAEnXA==
   dependencies:
     motion-utils "^12.9.4"
 

@@ -16,7 +16,7 @@ export const tradeAPI = {
 
   async fetchTraders() {
     return await this.getClient()
-  }
+  },
 
   async fetchStatistics(address: string) {
     const client: TradesClient = this.getClient();
