@@ -1,17 +1,16 @@
 "use client";
 
-import {AssetsClient, DataFeed, GetAssetsInfoResponse, TokenMetadata, TradesClient} from "blink-sdk";
+import {AssetsClient, GetAssetsInfoResponse, TokenMetadata} from "blink-sdk";
 import {useParams} from "next/navigation";
 import {useEffect, useState} from "react";
-import {tradeAPI} from "@/lib/api/tradeAPI";
 import Card from "@/components/ui/Card";
 import Image from "next/image";
 import Switch from "@/components/ui/Switch";
 import BuySell from "@/components/shared/Graphics/BuySell";
 import Statistics from "@/components/shared/Graphics/Statistics";
 import Transactions from "@/components/shared/Graphics/Transactions";
-import {ResolutionString, widget} from "charting_library";
 import {shortenString} from "@/lib/utils/shortenString";
+import Chart from "@/components/shared/Graphics/Chart";
 
 export default function Graphics() {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -71,35 +70,6 @@ export default function Graphics() {
 
         fetchAssetsClient();
     }, [params.token]);
-
-    useEffect(() => {
-        if(!assetsInfo?.length) return;
-        if(!container) return;
-            const client: TradesClient = tradeAPI.getClient();
-            const datafeed = new DataFeed(client,
-                "USDC",
-                assetsInfo[0].dex_info!.address,
-                1,
-                assetsInfo[0].decimals - 9,
-                1);
-
-            const tradingView = new widget({
-                symbol: "USDC",
-                theme: 'dark',
-                container,
-                locale: 'en',
-                datafeed,
-                interval: "1" as ResolutionString,
-                disabled_features: ["header_symbol_search"],
-                library_path: "/charting_library/",
-                height: '100%',
-                width: '100%'
-            })
-
-        return () => {
-                tradingView.remove()
-        }
-    }, [params.token, container]);
 
     if (!assetsInfo || !params.token) {
         return (<div className={"h-full w-full flex justify-center items-center"}>
@@ -189,11 +159,7 @@ export default function Graphics() {
                 <Switch/> Outlier
               </span>
                         </div>
-                        <div
-                            className="tradingview-widget-container h-full"
-                            ref={setContainer}
-                        >
-                        </div>
+                    <Chart address={assetsInfo[0].dex_info!.address} direction={assetsInfo[0].dex_info!.dir} decimals={assetsInfo[0].decimals}/>
                         <Transactions
                             direction={assetsInfo[0].dex_info!.dir}
                             address={assetsInfo[0].dex_info!.address}
