@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Button from "../../ui/Button";
 import { userAPI } from "@/lib/api/userAPI";
 import { toast } from "react-toastify";
+import { BlinkClient } from "blink-sdk";
 
 enum Mode {
   buy = "BUY",
@@ -60,8 +61,6 @@ export default function BuySell({ setDataMode, mint }: Props) {
 
     const client = await userAPI.getUser();
 
-    console.log(await client.getSettings());
-
     toast.info("Swapping...", {
       position: "bottom-right",
     });
@@ -74,15 +73,23 @@ export default function BuySell({ setDataMode, mint }: Props) {
         percentile: "_50",
       });
 
-      if (swap) {
-        toast("Success!", {
-          position: "bottom-right",
-          style: {
-            backgroundColor: "#202020",
-            color: "white",
-          },
-        });
-      }
+      const wsClient = await userAPI.getUser(undefined, "wss");
+
+      console.log("haha");
+      return await wsClient.subscribeTransactionsStatuses((result) => {
+        console.log("ws");
+        toast(result.status.status);
+      });
+
+      // if (swap) {
+      //   toast("Success!", {
+      //     position: "bottom-right",
+      //     style: {
+      //       backgroundColor: "#202020",
+      //       color: "white",
+      //     },
+      //   });
+      // }
     } catch (e) {
       console.error(e);
       toast.error(e instanceof Error ? e.message : "Error during swap");

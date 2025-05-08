@@ -20,37 +20,45 @@ export default function Header() {
   const [assetsInfo, setAssetsInfo] = useState<GetAssetsInfoResponse | null>(
     null
   );
+  const [metadata, setMetadata] = useState();
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const params = useParams<{ token: string }>();
 
   const [searchResultOpen, setSearchResultOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
+  const [searchLoading, setSearchLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchAssetsClient = async () => {
-      if (!process.env.NEXT_PUBLIC_ASSETS_URL) {
-        console.error("Next public assets url not provided");
-        return;
-      }
-      setLoading(true);
-      try {
-        const client: AssetsClient = AssetsClient.http(
-          process.env.NEXT_PUBLIC_ASSETS_URL
-        );
-        const assets_info = await client.getAssetsInfo([params.token]);
+    if (!search) return;
 
-        setAssetsInfo(assets_info);
-      } catch (error) {
-        console.error("Error getting token information:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const timeout = setTimeout(() => {
+      const fetchAssetsClient = async () => {
+        setAssetsInfo([]);
+        setSearchLoading(true);
+        if (!process.env.NEXT_PUBLIC_ASSETS_URL) {
+          console.error("Next public assets url not provided");
+          return;
+        }
+        try {
+          const client: AssetsClient = AssetsClient.http(
+            process.env.NEXT_PUBLIC_ASSETS_URL
+          );
+          const assets_info = await client.getAssetsInfo([search]);
 
-    fetchAssetsClient();
-  }, [params.token]);
+          setAssetsInfo(assets_info);
+        } catch (error) {
+          console.error("Error getting token information:", error);
+        } finally {
+          setSearchLoading(false);
+        }
+      };
+      fetchAssetsClient();
+    }, 500);
 
-  console.log(assetsInfo);
+    return () => clearTimeout(timeout); // Сброс таймера при каждом изменении slippage
+  }, [search]);
 
   const searchParams = useSearchParams();
   const paramsString = searchParams.toString();
@@ -103,29 +111,41 @@ export default function Header() {
           <Image src="/icons/search.svg" width={25} height={25} alt="search" />
         </span>
         <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           onClick={() => setSearchResultOpen(true)}
-          onBlur={() => setSearchResultOpen(false)}
+          onBlur={() => setTimeout(() => setSearchResultOpen(false), 250)}
           placeholder="Search by token or LP contract"
           className="min-w-[150px] w-[400px] max-w-[400px] h-[40px] pl-11 rounded-3xl px-2 bg-[#353535]"
         />
-        {searchResultOpen && assetsInfo?.length && (
-          <Card
-            onBlur={() => setSearchResultOpen(false)}
-            className={
-              "absolute flex hover:bg-[#252525] cursor-pointer transition-all flex-col gap-2 mt-3 z-50 w-[400px] shadow-2xl shadow-black"
-            }
-          >
-            <div className={"flex gap-3 text-white items-center text-xl"}>
-              <div className={"h-10 w-10 rounded-full bg-[#3D3D3D]"} />{" "}
-              {assetsInfo?.[0].name}
-            </div>
-            <div className={"flex gap-2 text-xs"}>
-              <span>${Number(assetsInfo?.[0].price_usd).toFixed(7)}</span>
-              <span>
-                Pair: {shortenString(assetsInfo?.[0].dex_info?.address || "")}
-              </span>
-            </div>
-          </Card>
+        {searchResultOpen && (
+          <Link href={`/${search}`}>
+            <Card
+              className={
+                "absolute flex hover:bg-[#252525] cursor-pointer transition-all flex-col gap-2 mt-3 z-50 w-[400px] shadow-2xl shadow-black"
+              }
+            >
+              {assetsInfo?.length ? (
+                <>
+                  <div className={"flex gap-3 text-white items-center text-xl"}>
+                    <div className={"h-10 w-10 rounded-full bg-[#3D3D3D]"} />{" "}
+                    {assetsInfo?.[0].name}
+                  </div>
+                  <div className={"flex gap-2 text-xs"}>
+                    <span>${Number(assetsInfo?.[0].price_usd).toFixed(7)}</span>
+                    <span>
+                      Pair:{" "}
+                      {shortenString(assetsInfo?.[0].dex_info?.address || "")}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="h-[100px] flex items-center justify-center">
+                  {searchLoading ? "Loading..." : "Not found"}
+                </div>
+              )}
+            </Card>
+          </Link>
         )}
       </div>
 

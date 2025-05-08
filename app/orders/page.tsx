@@ -154,7 +154,7 @@ export default function Orders() {
       minWidth: "130px",
       render: (value) => (
         <div className="flex flex-col">
-          <div>{compactNumber(+value)}</div>
+          <div>${compactNumber(+value)}</div>
         </div>
       ),
     },
