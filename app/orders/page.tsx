@@ -42,7 +42,7 @@ export default function Orders() {
         const user = await userAPI.getUser();
         const orderInfo = await user.getOrders();
         console.log(orderInfo)
-        setOrdersData(orderInfo.orders);
+        setOrdersData(orderInfo);
     }
 
     fetchUser()
