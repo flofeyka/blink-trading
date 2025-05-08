@@ -22,7 +22,10 @@ export const userAPI = {
     return url;
   },
 
-  async getUser(params?: string): Promise<BlinkClient> {
+  async getUser(
+    params?: string,
+    protocol: "https" | "wss" = "https"
+  ): Promise<BlinkClient> {
     if (params) {
       localStorage.setItem("params", params);
     }
@@ -50,10 +53,15 @@ export const userAPI = {
         localStorage.setItem("keyPair", toDER(keyPair));
       }
 
-      const client = BlinkClient.http(
-        process.env.NEXT_PUBLIC_API_URL!,
-        keyPair
-      );
+      let client;
+      if (protocol === "https") {
+        client = BlinkClient.http(process.env.NEXT_PUBLIC_API_URL!, keyPair);
+      } else {
+        client = BlinkClient.websocket(
+          `${protocol}//${process.env.NEXT_PUBLIC_API_URL!}`,
+          keyPair
+        );
+      }
 
       await client.getSettings();
 
