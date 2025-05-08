@@ -164,7 +164,7 @@ export default function Graphics() {
                     alt="coin"
                   />
                 </span>
-                <span>{assetsInfo[0].name}/USDC</span>
+                <span>{assetsInfo[0].name}/SOL</span>
               </span>
 
               <span className="space-x-3 text-[#716F7A]">
@@ -172,6 +172,7 @@ export default function Graphics() {
               </span>
             </div>
             <Chart
+              symbol={assetsInfo[0].symbol}
               address={assetsInfo[0].dex_info!.address}
               direction={assetsInfo[0].dex_info!.dir}
               decimals={assetsInfo[0].decimals}

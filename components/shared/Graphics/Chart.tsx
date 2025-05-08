@@ -8,10 +8,12 @@ export default function Chart({
   address,
   decimals,
   direction,
+  symbol
 }: {
   address: string;
   decimals: number;
   direction: number;
+  symbol: string
 }) {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
@@ -30,7 +32,7 @@ export default function Chart({
     const width = window.innerWidth;
 
     const tradingView = new widget({
-      symbol: "USDC",
+      symbol,
       container,
       locale: "en",
       datafeed,
