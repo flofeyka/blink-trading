@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Switch from "../../ui/Switch";
 import Checkbox from "../../ui/Checkbox";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Button from "../../ui/Button";
-import {userAPI} from "@/lib/api/userAPI";
-import {toast} from "react-toastify";
+import { userAPI } from "@/lib/api/userAPI";
+import { toast } from "react-toastify";
 
 enum Mode {
   buy = "BUY",
@@ -39,19 +39,19 @@ export default function BuySell({ setDataMode, mint }: Props) {
       const client = await userAPI.getUser();
       const slippage = await client.getSettings();
       setSlippage(slippage.slippage);
-    }
+    };
 
     fetchSlippage();
   }, []);
 
   useEffect(() => {
     setAmount(0);
-  }, [mode])
+  }, [mode]);
 
   const onSwap = async () => {
-    if(!amount) {
+    if (!amount) {
       toast.error("Please enter an amount", {
-        position: 'bottom-right',
+        position: "bottom-right",
         autoClose: 2000,
         pauseOnHover: false,
       });
@@ -63,31 +63,31 @@ export default function BuySell({ setDataMode, mint }: Props) {
     console.log(await client.getSettings());
 
     toast.info("Swapping...", {
-      position: 'bottom-right',
-    })
-    try {
-    const swap = await client.swap({
-      side: mode === Mode.buy ? "buy" : "sell",
-      mint,
-      amount: amount.toString(),
-      slippage,
-      percentile: "_50",
+      position: "bottom-right",
     });
+    try {
+      const swap = await client.swap({
+        side: mode === Mode.buy ? "buy" : "sell",
+        mint,
+        amount: amount.toString(),
+        slippage,
+        percentile: "_50",
+      });
 
-    if(swap) {
-      toast('Success!', {
-        position: 'bottom-right',
-        style: {
-          backgroundColor: '#202020',
-          color: 'white',
-        },
-      })
-    }
-    } catch(e) {
+      if (swap) {
+        toast("Success!", {
+          position: "bottom-right",
+          style: {
+            backgroundColor: "#202020",
+            color: "white",
+          },
+        });
+      }
+    } catch (e) {
       console.error(e);
-      toast.error(e instanceof Error ? e.message : 'Error during swap');
+      toast.error(e instanceof Error ? e.message : "Error during swap");
     }
-  }
+  };
   const getBuySell = () => {
     switch (mode) {
       case Mode.buy:
@@ -116,55 +116,97 @@ export default function BuySell({ setDataMode, mint }: Props) {
                   height={30}
                   alt="cardholder"
                 />
-                 <button onClick={() => setAmount(0.25)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                <button
+                  onClick={() => setAmount(0.25)}
+                  className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl"
+                >
                   <span>
-                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                    <Image
+                      className="cursor-pointer h-[30px] w-auto"
+                      src="/icons/solan.svg"
+                      width={15}
+                      height={15}
+                      alt="search"
+                    />
                   </span>
-                  <span className="flex justify-self-center w-full">
-                    0.25
-                  </span>
+                  <span className="flex justify-self-center w-full">0.25</span>
                 </button>
-                <button onClick={() => setAmount(0.5)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                <button
+                  onClick={() => setAmount(0.5)}
+                  className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl"
+                >
                   <span>
-                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                    <Image
+                      className="cursor-pointer h-[30px] w-auto"
+                      src="/icons/solan.svg"
+                      width={15}
+                      height={15}
+                      alt="search"
+                    />
                   </span>
-                  <span className="flex justify-self-center w-full">
-                    0.5
-                  </span>
+                  <span className="flex justify-self-center w-full">0.5</span>
                 </button>
-                <button onClick={() => setAmount(1)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                <button
+                  onClick={() => setAmount(1)}
+                  className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl"
+                >
                   <span>
-                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                    <Image
+                      className="cursor-pointer h-[30px] w-auto"
+                      src="/icons/solan.svg"
+                      width={15}
+                      height={15}
+                      alt="search"
+                    />
                   </span>
-                  <span className="flex justify-self-center w-full">
-                    1
-                  </span>
+                  <span className="flex justify-self-center w-full">1</span>
                 </button>
               </div>
               <div className="flex gap-3 max-md:hidden">
-                <button onClick={() => setAmount(2)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                <button
+                  onClick={() => setAmount(2)}
+                  className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl"
+                >
                   <span>
-                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                    <Image
+                      className="cursor-pointer h-[30px] w-auto"
+                      src="/icons/solan.svg"
+                      width={15}
+                      height={15}
+                      alt="search"
+                    />
                   </span>
-                  <span className="flex justify-self-center w-full">
-                    2
-                  </span>
+                  <span className="flex justify-self-center w-full">2</span>
                 </button>
-                <button onClick={() => setAmount(5)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                <button
+                  onClick={() => setAmount(5)}
+                  className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl"
+                >
                   <span>
-                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                    <Image
+                      className="cursor-pointer h-[30px] w-auto"
+                      src="/icons/solan.svg"
+                      width={15}
+                      height={15}
+                      alt="search"
+                    />
                   </span>
-                  <span className="flex justify-self-center w-full">
-                    5
-                  </span>
+                  <span className="flex justify-self-center w-full">5</span>
                 </button>
-                <button onClick={() => setAmount(10)} className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl">
+                <button
+                  onClick={() => setAmount(10)}
+                  className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer border-2 flex rounded-xl"
+                >
                   <span>
-                    <Image className="cursor-pointer h-[30px] w-auto" src="/icons/solan.svg" width={15} height={15} alt="search" />
+                    <Image
+                      className="cursor-pointer h-[30px] w-auto"
+                      src="/icons/solan.svg"
+                      width={15}
+                      height={15}
+                      alt="search"
+                    />
                   </span>
-                  <span className="flex justify-self-center w-full">
-                    10
-                  </span>
+                  <span className="flex justify-self-center w-full">10</span>
                 </button>
               </div>
               <div className="max-md:flex gap-2 justify-stretch items-center w-full">
@@ -271,7 +313,7 @@ export default function BuySell({ setDataMode, mint }: Props) {
                   </select>
                   <input
                     value={amount}
-                    type={'number'}
+                    type={"number"}
                     onChange={(e) => setAmount(parseFloat(e.target.value))}
                     placeholder="Amount to sell in SOL"
                     className="border-[#716F7A] rounded-l-none pl-2 border-2 p-2 w-full rounded-xl"
@@ -291,7 +333,10 @@ export default function BuySell({ setDataMode, mint }: Props) {
       case Mode.buy:
         return (
           <div>
-            <Button onClick={onSwap} className="w-full h-10 flex font-semibold justify-center items-center gap-2.5 text-xl">
+            <Button
+              onClick={onSwap}
+              className="w-full h-10 flex font-semibold justify-center items-center gap-2.5 text-xl"
+            >
               <span>
                 <Image
                   src="/icons/blink.svg"
@@ -306,7 +351,10 @@ export default function BuySell({ setDataMode, mint }: Props) {
         );
       case Mode.sell:
         return (
-          <Button onClick={onSwap} className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-center font-semibold w-full gap-2.5">
+          <Button
+            onClick={onSwap}
+            className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-center font-semibold w-full gap-2.5"
+          >
             <span>
               <Image
                 src="/icons/blink.svg"
@@ -330,10 +378,12 @@ export default function BuySell({ setDataMode, mint }: Props) {
           <span
             key={modeItem}
             onClick={() => setMode(modeItem)}
-            className={`text-center justify-stretch w-full cursor-pointer ${mode === modeItem ? "bg-[#353535]" : "bg-[#202020]"
-              } ${index + 1 === Object.values(Mode).length &&
+            className={`text-center justify-stretch w-full cursor-pointer ${
+              mode === modeItem ? "bg-[#353535]" : "bg-[#202020]"
+            } ${
+              index + 1 === Object.values(Mode).length &&
               "max-md:rounded-tr-md z-20"
-              } border-r border-b border-[#353535] p-3`}
+            } border-r border-b border-[#353535] p-3`}
           >
             <div className="text-[14px] text-[#A9A9A9] flex items-center justify-center gap-3">
               <span>
@@ -420,10 +470,11 @@ export default function BuySell({ setDataMode, mint }: Props) {
                   <span
                     onClick={() => setSpeedMode(speed)}
                     key={speed}
-                    className={`w-full flex justify-center cursor-pointer border-2 rounded-md p-2 ${speed === speedMode
+                    className={`w-full flex justify-center cursor-pointer border-2 rounded-md p-2 ${
+                      speed === speedMode
                         ? "border-[#AEFF00] text-[#AEFF00]"
                         : "border-[#716F7A]"
-                      }`}
+                    }`}
                   >
                     {speed}
                   </span>
