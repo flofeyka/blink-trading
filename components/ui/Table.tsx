@@ -1,6 +1,6 @@
-import {ReactNode, useEffect, useRef, useState} from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import SortArrows, {SortDirection} from "./SortArrows";
+import SortArrows, { SortDirection } from "./SortArrows";
 
 export interface Column<T> {
   header: string | ReactNode;
@@ -195,7 +195,13 @@ export default function Table<T>({
             {data.map((row, rowIndex) => (
               <tr
                 key={rowIndex}
-                className={`text-sm border-b border-[#353535] hover:bg-[#2c2c2c] transition-all duration-300 ${row && typeof row === "object" && 'color' in row && row?.color && `text-${row?.color}`} ${rowClassName}`}
+                className={`text-sm border-b border-[#353535] hover:bg-[#2c2c2c] transition-all duration-300 ${
+                  row &&
+                  typeof row === "object" &&
+                  "color" in row &&
+                  row?.color &&
+                  `text-${row?.color}`
+                } ${rowClassName}`}
               >
                 {columns.map((column, colIndex) => {
                   const alignClass =

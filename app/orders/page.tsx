@@ -1,26 +1,25 @@
 "use client";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import Table, {Column} from "@/components/ui/Table";
+import Table, { Column } from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
-import {userAPI} from "@/lib/api/userAPI";
+import { userAPI } from "@/lib/api/userAPI";
+import { compactNumber } from "@/lib/utils/compactNumber";
+import { timeAgo } from "@/lib/utils/ageDate";
 
 interface OrderItem {
-  token: string;
-  lastActive: string;
-  unrealized: number;
-  realizedProfit: number;
-  totalProfit: number;
-  balance: number;
-  bought: {
-    amount: number;
-    price: number;
-  };
-  sold: {
-    amount: number;
-    price: number;
-  };
+  amount: BigInt;
+  amount_ui: string;
+  amount_ui_usd: string;
+  created_at: number;
+  current_price: string;
+  entry_price: string;
+  mint: string;
+  mint_name: string;
+  mint_symbol: string;
+  order_pubkey: string;
+  updated_at: number;
 }
 
 interface TabItem {
@@ -35,17 +34,19 @@ export default function Orders() {
   const [hideSmallAsset, setHideSmallAsset] = useState(false);
   const [hideSellOut, setHideSellOut] = useState(false);
 
-  const [orderData, setOrdersData] = useState<any | null>(null);
+  const [orderData, setOrdersData] = useState<OrderItem[]>([]);
+
+  const [dateViewMode, setDateViewMode] = useState<"date" | "age">("date");
 
   useEffect(() => {
-    const fetchUser = async () => {
-        const user = await userAPI.getUser();
-        const orderInfo = await user.getOrders();
-        console.log(orderInfo)
-        setOrdersData(orderInfo);
-    }
+    const fetchOrders = async () => {
+      const client = await userAPI.getUser();
+      const orderInfo = await client.getOrders();
+      console.log(orderInfo);
+      setOrdersData(orderInfo);
+    };
 
-    fetchUser()
+    fetchOrders();
   }, []);
 
   const tabs: TabItem[] = [
@@ -59,131 +60,124 @@ export default function Orders() {
     },
   ];
 
-  const ordersData: OrderItem[] = [
-    {
-      token: "WHALE",
-      lastActive: "4.4M",
-      unrealized: 13.54,
-      realizedProfit: 11.34,
-      totalProfit: 24.88,
-      balance: 13.43,
-      bought: {
-        amount: 350.54,
-        price: 0.0042355,
-      },
-      sold: {
-        amount: 55.36,
-        price: 0.0055,
-      },
-    },
-  ];
-
   const columns: Column<OrderItem>[] = [
     {
-      header: "TOKEN / LAST ACTIVE",
-      key: "token",
+      header: (
+        <div className="rounded-xl overflow-hidden border border-[#353535] flex">
+          <button
+            className={`text-xs px-5 py-1.5 cursor-pointer ${
+              dateViewMode === "date"
+                ? "text-white bg-[#353535]"
+                : "text-[#A9A9A9]"
+            }`}
+            onClick={() => setDateViewMode("date")}
+          >
+            DATE
+          </button>
+          <button
+            className={`text-xs px-5 py-1.5 cursor-pointer ${
+              dateViewMode === "age"
+                ? "text-white bg-[#353535]"
+                : "text-[#A9A9A9]"
+            }`}
+            onClick={() => setDateViewMode("age")}
+          >
+            AGE
+          </button>
+        </div>
+      ),
+      key: "created_at",
       align: "left",
-      sortable: true,
       minWidth: "170px",
-      render: (_, row) => (
+      render: (value, row) => (
+        <span>
+          {dateViewMode === "date"
+            ? new Date(value * 1000)
+                .toLocaleString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  second: "numeric",
+                })
+                .replace("at", "")
+            : `${timeAgo(value)}`}
+        </span>
+      ),
+    },
+    {
+      header: "TOKEN",
+      key: "mint_name",
+      align: "left",
+      minWidth: "170px",
+      render: (value, row) => (
         <div className="flex items-center gap-2">
           <div className="w-[30px] h-[30px] rounded-full bg-[#3D3D3D] flex items-center justify-center">
             <div className="w-[8px] h-[8px] bg-green-500 rounded-full"></div>
           </div>
           <div>
-            <div>{row.token}</div>
-            <div className="text-[#A9A9A9] text-xs">{row.lastActive}</div>
+            <div>{value}</div>
+            <div className="text-[#A9A9A9] text-xs">{}</div>
           </div>
         </div>
       ),
     },
     {
-      header: "UNREALIZED",
-      key: "unrealized",
-      sortable: true,
+      header: "TYPE",
+      key: "mint",
       minWidth: "130px",
       align: "left",
-      render: (value) => (
-        <span>
-          <div>+$31.4k</div>
-          <div className="text-[#00FFA3]">+{value.toFixed(2)}%</div>
-        </span>
-      ),
+      render: () => <div className="text-[#00FFA3]">BUY</div>,
     },
     {
-      header: "REALIZED PROFIT",
-      key: "realizedProfit",
-      sortable: true,
+      header: "TOTAL TOKEN",
+      key: "amount_ui",
       minWidth: "150px",
       align: "left",
       render: (value) => (
-        <span className="text-[#00FFA3]">
-          <div>+$33.4k</div>
-          <div>+44%</div>
-        </span>
+        <span className="text-[#00FFA3]">{compactNumber(+value)}</span>
       ),
     },
     {
-      header: "TOTAL PROFIT",
-      key: "totalProfit",
-      sortable: true,
+      header: "TOTAL USD",
+      key: "amount_ui_usd",
       minWidth: "130px",
       align: "left",
       render: (value) => (
-        <span className="text-[#00FFA3]">
-          <div>+$33.4k</div>
-          <div>+44%</div>
-        </span>
+        <span className="text-[#00FFA3]">${compactNumber(+value)}</span>
       ),
     },
     {
-      header: "BALANCE",
-      key: "balance",
-      sortable: true,
+      header: "ENTRY PRICE",
+      key: "entry_price",
       align: "left",
       minWidth: "130px",
       render: (value) => (
         <div className="flex flex-col">
-          <div>$35.43</div>
-          <div className="text-[#A9A9A9] text-xs">4.8M</div>
+          <div>{compactNumber(+value)}</div>
         </div>
       ),
     },
     {
-      header: "BOUGHT",
-      key: "bought",
-      sortable: true,
+      header: "CURRENT PRICE",
+      key: "current_price",
       align: "left",
       minWidth: "130px",
       render: (value) => (
         <div className="flex flex-col">
-          <div>${value.amount.toFixed(2)}</div>
-          <div className="text-[#A9A9A9] text-xs">${value.price}</div>
-        </div>
-      ),
-    },
-    {
-      header: "SOLD",
-      key: "sold",
-      sortable: true,
-      align: "left",
-      minWidth: "130px",
-      render: (value) => (
-        <div className="flex flex-col">
-          <div>${value.amount.toFixed(2)}</div>
-          <div className="text-[#A9A9A9] text-xs">${value.price}</div>
+          <div>${compactNumber(+value)}</div>
         </div>
       ),
     },
     {
       header: "",
-      key: "token",
+      key: "mint",
       align: "right",
-      minWidth: "200px",
+      minWidth: "150px",
       render: () => (
         <div className="flex justify-end items-center">
           <Button className="bg-gradient-to-r from-[#F43500] to-[#AA1013] flex items-center justify-center font-semibold gap-2 py-2 px-3">
-            <span>QUICK SELL</span>
+            <span>Cancel</span>
           </Button>
         </div>
       ),
@@ -248,7 +242,7 @@ export default function Orders() {
 
         <div className="mt-3">
           <Table
-            data={ordersData}
+            data={orderData}
             columns={columns}
             className="text-[13px] max-md:text-[11px]"
           />

@@ -3,7 +3,6 @@ import Image from "next/image";
 import PortfolioTable from "@/components/shared/Portfolio/PortfolioTable";
 
 export default function Portfolio() {
-
   return (
     <div className="flex flex-col gap-5">
       <h1 className="text-2xl mb-5">Portfolio</h1>

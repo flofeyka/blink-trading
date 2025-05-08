@@ -1,32 +1,34 @@
-'use client';
+"use client";
 
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Image from "next/image";
-import {useEffect, useState} from "react";
-import {userAPI} from "@/lib/api/userAPI";
+import { useEffect, useState } from "react";
+import { userAPI } from "@/lib/api/userAPI";
 
 export default function Referral() {
-
   const [referralData, setReferralData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUser = async () => {
-      setLoading(true)
-        const user = await userAPI.getUser();
-        const referralsInfo = await user.getReferrals();
-        console.log(referralsInfo);
-        setReferralData(referralsInfo);
-        setLoading(false);
-    }
+      setLoading(true);
+      const user = await userAPI.getUser();
+      const referralsInfo = await user.getReferrals();
+      console.log(referralsInfo);
+      setReferralData(referralsInfo);
+      setLoading(false);
+    };
 
-    fetchUser()
+    fetchUser();
   }, []);
 
-  if(loading) return <div className={'h-full w-full flex justify-center items-center'}>
-    Loading...
-  </div>
+  if (loading)
+    return (
+      <div className={"h-full w-full flex justify-center items-center"}>
+        Loading...
+      </div>
+    );
 
   return (
     <div>
