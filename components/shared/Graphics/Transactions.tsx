@@ -87,6 +87,7 @@ export default function Transactions({address, direction}: { address: string, di
 
                 setTransactionData(formatTransactionData(transactions, direction));
 
+
             } catch (e) {
                 console.error(e);
             } finally {
@@ -117,7 +118,7 @@ export default function Transactions({address, direction}: { address: string, di
         return () => {
             isData = false;
         }
-    }, [])
+    }, []);
 
 
     const tabs: TabItem[] = [{
@@ -132,7 +133,6 @@ export default function Transactions({address, direction}: { address: string, di
         id: "orders", label: "Orders", icon: "/icons/orders.svg",
     },];
 
-    // Holdings data
     const holdings: Holding[] = [{
         token: "TRUMP",
         image: '/images/trump.jpg',
