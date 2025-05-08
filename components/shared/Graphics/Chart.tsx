@@ -1,8 +1,8 @@
 'use client';
 import {tradeAPI} from "@/lib/api/tradeAPI";
 import {ResolutionString, widget} from "charting_library";
-import {DataFeed, TradesClient} from "@/submodule/src";
 import {useEffect, useState} from 'react';
+import {DataFeed, TradesClient} from "blink-sdk";
 
 export default function Chart({address, decimals, direction}: {address: string, decimals: number, direction: number}) {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -25,8 +25,9 @@ export default function Chart({address, decimals, direction}: {address: string, 
             interval: "1" as ResolutionString,
             disabled_features: ["header_symbol_search"],
             library_path: "/charting_library/",
-            // height: '100%',
-            // width: '100%'
+            height: '100%',
+            width: '100%',
+            theme: 'dark'
         })
 
         return () => {
@@ -35,7 +36,7 @@ export default function Chart({address, decimals, direction}: {address: string, 
     }, [container]);
 
     return <div
-        // className="tradingview-widget-container h-full"
+        className="h-full"
         ref={setContainer}
     >
     </div>
