@@ -45,23 +45,27 @@ export default function SettingsPage() {
     useState<Settings>(Settings.s1);
 
   const [slippage, setSlippage] = useState<number>();
+  const [percentile, setPercentile] = useState<
+    "_25" | "_50" | "_75" | "_95" | "_99"
+  >("_25");
 
   const handleSettingsChange = async (params: UpdateSettingsParams) => {
     const user = await userAPI.getUser();
 
     const updatedSettings = await user.updateSettings(params);
     setSlippage(updatedSettings.slippage);
+    setPercentile(updatedSettings.percentile);
   };
 
   useEffect(() => {
     if (!slippage) return;
 
     const timeout = setTimeout(() => {
-      handleSettingsChange({ slippage });
+      handleSettingsChange({ slippage, percentile });
     }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [slippage]);
+  }, [slippage, percentile]);
 
   useLayoutEffect(() => {
     const fetchUser = async () => {
@@ -184,16 +188,30 @@ export default function SettingsPage() {
 
                 <div className="p-4 flex flex-col gap-3 border-b border-[#353535]">
                   <header className="flex flex-col gap-1">
-                    <h3>PRIORITY FEE</h3>
-                    <div className="text-[#A9A9A9] text-[12px]">
-                      The amount you send to validators to pick up your
-                      transaction. We recommend using an amount that’s equal to
-                      or higer than the median
-                    </div>
+                    <h3>TIP PERCENTILE</h3>
                   </header>
                   <div className="flex gap-2 items-center">
                     <span>
-                      <input className="border-[#716F7A] border w-[100px] p-2 rounded-xl" />
+                      <select
+                        value={percentile}
+                        onChange={(e) =>
+                          setPercentile(
+                            e.target.value as
+                              | "_25"
+                              | "_50"
+                              | "_75"
+                              | "_95"
+                              | "_99"
+                          )
+                        }
+                        className="border-[#716F7A] bg-[#252525] border w-[100px] p-2 rounded-xl"
+                      >
+                        <option value="_25">25</option>
+                        <option value="_50">50</option>
+                        <option value="_75">75</option>
+                        <option value="_95">95</option>
+                        <option value="_99">99</option>
+                      </select>
                     </span>
                     <span>SOL</span>
                   </div>
