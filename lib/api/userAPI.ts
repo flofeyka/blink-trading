@@ -1,6 +1,7 @@
 import {
   BlinkClient,
   decryptSessionKeyPair,
+  GetPositionParams,
   GetPositionsResponse,
   initSession,
 } from "blink-sdk";
@@ -80,6 +81,10 @@ export const userAPI = {
     } catch (e) {
       throw e;
     }
+  },
+
+  async getHoldings(params: GetPositionParams) {
+    return await (await this.getUser()).getPosition(params);
   },
 
   logout(): void {

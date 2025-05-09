@@ -81,10 +81,6 @@ export default function PortfolioTable() {
       id: "holdings",
       label: "Holdings",
     },
-    {
-      id: "activity",
-      label: "Activity",
-    },
   ];
 
   const columns: Column<any>[] = [
@@ -92,7 +88,6 @@ export default function PortfolioTable() {
       header: "TOKEN / LAST ACTIVE",
       key: "token",
       align: "left",
-      sortable: true,
       minWidth: "170px",
       render: (_, row) => (
         <div className="flex items-center gap-2">
@@ -107,7 +102,6 @@ export default function PortfolioTable() {
     {
       header: "UNREALIZED PnL",
       key: "pnl",
-      sortable: true,
       align: "left",
       minWidth: "130px",
       render: (value) => (
@@ -122,7 +116,6 @@ export default function PortfolioTable() {
     {
       header: "BALANCE",
       key: "balance",
-      sortable: true,
       align: "left",
       minWidth: "130px",
       render: (value) => (
@@ -137,7 +130,6 @@ export default function PortfolioTable() {
     {
       header: "ENTRY PRICE",
       key: "avg_price",
-      sortable: true,
       align: "left",
       minWidth: "130px",
       render: (value) => (
@@ -152,7 +144,6 @@ export default function PortfolioTable() {
     {
       header: "CURRENT PRICE",
       key: "price",
-      sortable: true,
       align: "left",
       minWidth: "150px",
       render: (value) => (
@@ -161,24 +152,6 @@ export default function PortfolioTable() {
           <div className="text-[#A9A9A9] text-xs">
             ${parseFloat(value.price_usd).toFixed(3)}
           </div>
-        </div>
-      ),
-    },
-    {
-      header: "",
-      key: "token",
-      align: "right",
-      minWidth: "130px",
-      render: () => (
-        <div className="flex justify-end gap-2 items-center">
-          <Image
-            src="/icons/share.svg"
-            width={25}
-            height={25}
-            alt="share"
-            className="cursor-pointer"
-          />{" "}
-          Share
         </div>
       ),
     },
@@ -239,21 +212,6 @@ export default function PortfolioTable() {
               placeholder="Search Token"
               className="w-[200px] max-md:text-12px max-md:w-full h-[35px] pl-8 rounded-3xl px-2 bg-[#353535]"
             />
-          </span>
-        </div>
-
-        <div className="md:flex items-center gap-4 text-[#716F7A] hidden">
-          <span className="flex items-center gap-2">
-            <Checkbox checked={hideLowLiq} setChecked={setHideLowLiq} />
-            Hide Low Liq / Honeypot
-          </span>
-          <span className="flex items-center gap-2">
-            <Checkbox checked={hideSmallAsset} setChecked={setHideSmallAsset} />
-            Hide Small Asset
-          </span>
-          <span className="flex items-center gap-2">
-            <Checkbox checked={hideSellOut} setChecked={setHideSellOut} />
-            Hide Sell Out
           </span>
         </div>
       </div>
