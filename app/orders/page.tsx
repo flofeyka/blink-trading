@@ -7,6 +7,7 @@ import Checkbox from "@/components/ui/Checkbox";
 import { userAPI } from "@/lib/api/userAPI";
 import { compactNumber } from "@/lib/utils/compactNumber";
 import { timeAgo } from "@/lib/utils/ageDate";
+import { toast } from "react-toastify";
 
 interface OrderItem {
   amount: BigInt;
@@ -59,6 +60,17 @@ export default function Orders() {
       label: "Activity",
     },
   ];
+
+  const onCancel = async (pubKey: string) => {
+    try {
+      toast('Waiting for cancel...');
+      const client = await userAPI.getUser();
+      // await client.cancelOrderLimit
+      toast.success('Success!');
+    } catch(e) {
+      toast.error('Cannot cancel the order');
+    }
+  }
 
   const columns: Column<OrderItem>[] = [
     {
