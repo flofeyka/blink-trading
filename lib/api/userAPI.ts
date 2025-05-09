@@ -3,6 +3,7 @@ import {
   decryptSessionKeyPair,
   GetPositionParams,
   GetPositionsResponse,
+  GetPositionsWithTotalResponse,
   initSession,
 } from "blink-sdk";
 import elliptic from "elliptic";
@@ -74,10 +75,10 @@ export const userAPI = {
     }
   },
 
-  async fetchPortfolio(): Promise<GetPositionsResponse> {
+  async fetchPortfolio(): Promise<GetPositionsWithTotalResponse> {
     try {
       const client = await this.getUser();
-      return await client.getPositions();
+      return await client.getPositionsWithTotal();
     } catch (e) {
       throw e;
     }
