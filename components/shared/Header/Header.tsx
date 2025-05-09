@@ -128,7 +128,13 @@ export default function Header() {
               {assetsInfo?.length ? (
                 <>
                   <div className={"flex gap-3 text-white items-center text-xl"}>
-                    <div className={"h-10 w-10 rounded-full bg-[#3D3D3D]"} />{" "}
+                    <Image
+                      src={assetsInfo[0].image || ""}
+                      height={100}
+                      width={100}
+                      alt="Token"
+                      className={"h-10 w-10 rounded-full bg-[#3D3D3D]"}
+                    />
                     {assetsInfo?.[0].name}
                   </div>
                   <div className={"flex gap-2 text-xs"}>
