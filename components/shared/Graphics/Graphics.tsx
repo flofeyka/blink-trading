@@ -22,9 +22,6 @@ export default function Graphics() {
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [chartError, setChartError] = useState<string | null>(null);
-  const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(
-    null
-  );
 
   const params = useParams<{ token: string }>();
   useEffect(() => {
@@ -55,13 +52,6 @@ export default function Graphics() {
         }
 
         console.log("Token ChainId:", assets_info[0].dex_info.address);
-
-        if (assets_info[0].uri) {
-          const metadata = await client.getTokenMetadata(assets_info[0].uri);
-          console.log("Metadata:", metadata);
-
-          setTokenMetadata(metadata);
-        }
 
         setAssetsInfo(assets_info);
       } catch (error) {
@@ -157,7 +147,7 @@ export default function Graphics() {
                 </span>
                 <span>
                   <Image
-                    src={tokenMetadata?.image || "/icons/trump.svg"}
+                    src={assetsInfo[0].image || "/icons/trump.svg"}
                     className="w-[30px] h-[30px] object-right-top rounded-full bg-[#3D3D3D]"
                     height={30}
                     width={30}
@@ -192,7 +182,7 @@ export default function Graphics() {
           <Card className="font-medium max-md:hidden">
             <div className="flex border-b border-[#353535] gap-2 pb-3">
               <img
-                src={tokenMetadata?.image || "/icons/trump.svg"}
+                src={assetsInfo[0].image || "/icons/trump.svg"}
                 className="w-[40px] h-[40px] object-cover object-right-top rounded-full bg-[#3D3D3D]"
                 height={30}
                 width={30}
