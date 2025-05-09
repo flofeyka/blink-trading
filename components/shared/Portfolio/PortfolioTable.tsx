@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
 import { userAPI } from "@/lib/api/userAPI";
 import { toast } from "react-toastify";
+import { Asset } from "blink-sdk";
 
 interface TabItem {
   id: string;
@@ -13,68 +14,17 @@ interface TabItem {
   icon?: string;
 }
 
-export default function PortfolioTable() {
+interface Props {
+  onWithdraw: (mint: string) => void;
+  positions: Asset[];
+  loading: boolean;
+}
+
+export default function PortfolioTable({ positions, onWithdraw, loading }: Props) {
   const [activeTab, setActiveTab] = useState<string>("holdings");
   const [hideLowLiq, setHideLowLiq] = useState<boolean>(false);
   const [hideSmallAsset, setHideSmallAsset] = useState<boolean>(false);
   const [hideSellOut, setHideSellOut] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const [positions, setPositions] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchPositions = async () => {
-      try {
-        const positions = await userAPI.fetchPortfolio();
-        setPositions(
-          positions.map((position) => ({
-            ...position,
-            avg_price: {
-              price_token: position.avg_price,
-              price_usd: position.avg_price_usd,
-            },
-            price: {
-              price_token: position.price,
-              price_usd: position.price_usd,
-            },
-            balance: {
-              balance_ui_token: position.balance_ui,
-              balance_ui_usd: position.balance_ui_usd,
-            },
-            pnl: {
-              pnl_usd: position.pnl_usd,
-              pnl_percent: position.pnl_percent,
-            },
-          }))
-        );
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPositions();
-  }, []);
-
-  const onWithdraw = async (mint: string) => {
-    try {
-      const client = await userAPI.getUser();
-
-      toast("Waiting for withdraw...", { autoClose: 1000 });
-      await client.withdraw({
-        mint,
-        amount: "1",
-        recipient: "test-recipient",
-      });
-      toast("Success!", { autoClose: 1000 });
-
-      setPositions((prev) => prev.filter((pos) => pos.mint !== mint));
-    } catch (e) {
-      console.error(e);
-      toast.error("Error during withdraw");
-    }
-  };
 
   const tabs: TabItem[] = [
     {
@@ -115,7 +65,7 @@ export default function PortfolioTable() {
     },
     {
       header: "BALANCE",
-      key: "balance",
+      key: "balance_column",
       align: "left",
       minWidth: "130px",
       render: (value) => (
@@ -129,7 +79,7 @@ export default function PortfolioTable() {
     },
     {
       header: "ENTRY PRICE",
-      key: "avg_price",
+      key: "avg_price_column",
       align: "left",
       minWidth: "130px",
       render: (value) => (
@@ -143,7 +93,7 @@ export default function PortfolioTable() {
     },
     {
       header: "CURRENT PRICE",
-      key: "price",
+      key: "price_column",
       align: "left",
       minWidth: "150px",
       render: (value) => (
