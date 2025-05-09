@@ -1,79 +1,23 @@
 "use client";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Table, { Column } from "../../ui/Table";
-import Button from "@/components/ui/Button";
 import SortArrows, { SortDirection } from "@/components/ui/SortArrows";
+import { AssetAPI } from "@/lib/api/assetAPI";
 import { tradeAPI } from "@/lib/api/tradeAPI";
-import Link from "next/link";
+import { userAPI } from "@/lib/api/userAPI";
 import { timeAgo } from "@/lib/utils/ageDate";
-import { shortenString } from "@/lib/utils/shortenString";
-import { TradesClient } from "blink-sdk";
 import { compactNumber } from "@/lib/utils/compactNumber";
-
-interface Holding {
-  token: string;
-  image: string;
-  lastActive: string;
-  unrealizedProfit: number;
-  profitPercent: number;
-  realizedProfit: number;
-  totalProfit: number;
-  balance: number;
-  bought: number;
-  sold: number;
-}
-
-interface Holder {
-  wallet: string;
-  owned: string;
-  amount: string;
-  value: string;
-}
-
-interface TabItem {
-  id: string;
-  label: string;
-  icon?: string;
-}
-
-interface Transaction {
-  amm: string;
-  block_timestamp: number;
-  side: "buy" | "sell";
-  color: string;
-  signature: string;
-  index: number;
-  price_usd: number;
-  total_usd: number;
-  price: number;
-  base_amount: number;
-  quote_amount: number;
-}
-
-interface Trader {
-  address: string;
-  buy_txns: number;
-  sell_txns: number;
-  bought_quote: number;
-  sold_quote: number;
-  bought_base: number;
-  sold_base: number;
-  pnl_quote: number;
-  remaining_base: number;
-}
-
-interface FormattedTrader extends Trader {
-  rank: number;
-  sold: {
-    quote: number;
-    base: number;
-  };
-  bought: {
-    base: number;
-    quote: number;
-  };
-}
+import { shortenString } from "@/lib/utils/shortenString";
+import { TopHolder, TradesClient } from "blink-sdk";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import Table, { Column } from "../../../ui/Table";
+import {
+  FormattedHolding,
+  FormattedTrader,
+  TabItem,
+  Trader,
+  Transaction,
+} from "./Transactions.types";
 
 const formatTransactionData = (
   transactions: any[],
@@ -113,12 +57,14 @@ export default function Transactions({
   decimals,
   price_sol,
   price_usd,
+  mint,
 }: {
   address: string;
   direction: number;
   decimals: number;
   price_sol: number;
   price_usd: number;
+  mint: string;
 }) {
   const [activeTab, setActiveTab] = useState<string>("transactions");
   const [dateViewMode, setDateViewMode] = useState<"date" | "age">("date");
@@ -127,8 +73,12 @@ export default function Transactions({
 
   const [transactionData, setTransactionData] = useState<Transaction[]>([]);
   const [topTraders, setTopTraders] = useState<FormattedTrader[]>([]);
+  const [holdings, setHoldings] = useState<FormattedHolding[]>([]);
+  const [topHolders, setTopHolders] = useState<TopHolder[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
+
+  console.log(holdings);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -145,11 +95,44 @@ export default function Transactions({
           decimals
         );
 
-        console.log(transactions);
+        const holding = await userAPI
+          .getHoldings({
+            mint,
+          })
+          .catch(() => undefined);
+
+        const holders = await AssetAPI.topHolders(mint);
+        console.log(holders);
+
         setTopTraders(formatTopTradersData(topTrades));
         setTransactionData(
           formatTransactionData(transactions, price_sol, price_usd)
         );
+        setTopHolders(holders?.top_holders || []);
+
+        if (holding) {
+          setHoldings(
+            [holding].map((item) => ({
+              ...item,
+              avg_price_column: {
+                price_token: item.avg_price,
+                price_usd: item.avg_price_usd,
+              },
+              price_column: {
+                price_token: item.price,
+                price_usd: item.price_usd,
+              },
+              balance_column: {
+                balance_ui_token: item.balance_ui,
+                balance_ui_usd: item.balance_ui_usd,
+              },
+              pnl: {
+                pnl_usd: item.pnl_usd,
+                pnl_percent: item.pnl_percent,
+              },
+            }))
+          );
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -168,9 +151,12 @@ export default function Transactions({
         `wss://${process.env.NEXT_PUBLIC_TRADES_URL}`
       );
 
-      await client.subscribeTrades(
+      await client.subscribeUiTrades(
         {
           amm: address,
+          dir: direction,
+          quote_decimals: 9,
+          base_decimals: decimals,
         },
         (result) => {
           setTransactionData((prev) => [
@@ -208,62 +194,13 @@ export default function Transactions({
     },
     {
       id: "holders",
-      label: "Holders (12272)",
+      label: `Holders (${topHolders.length})`,
       icon: "/icons/holders.svg",
     },
     {
       id: "orders",
       label: "Orders",
       icon: "/icons/orders.svg",
-    },
-  ];
-
-  const holdings: Holding[] = [
-    {
-      token: "TRUMP",
-      image: "/images/trump.jpg",
-      lastActive: "5h",
-      unrealizedProfit: 689,
-      profitPercent: 157.8,
-      realizedProfit: 433.2,
-      totalProfit: 1122.2,
-      balance: 6308.6,
-      bought: 310.55,
-      sold: 0,
-    },
-  ];
-
-  // Holders data
-  const holders: Holder[] = [
-    {
-      wallet: "2hs...3dn",
-      owned: "16.00%",
-      amount: "160M",
-      value: "$3.4k",
-    },
-    {
-      wallet: "3ju...2te",
-      owned: "15.00%",
-      amount: "150M",
-      value: "$3.4k",
-    },
-    {
-      wallet: "5hg...2bn",
-      owned: "15.00%",
-      amount: "150M",
-      value: "$3.4k",
-    },
-    {
-      wallet: "7hy...2bn",
-      owned: "15.00%",
-      amount: "150M",
-      value: "$3.4k",
-    },
-    {
-      wallet: "9ks...2tn",
-      owned: "15.00%",
-      amount: "150M",
-      value: "$3.4k",
     },
   ];
 
@@ -434,116 +371,126 @@ export default function Transactions({
     },
   ];
 
-  const holdingColumns: Column<Holding>[] = [
+  const holdingColumns: Column<FormattedHolding>[] = [
     {
       header: "TOKEN / LAST ACTIVE",
-      key: "token",
+      key: "name",
       align: "left",
       sortable: true,
-      minWidth: "200px",
-      width: "200px",
-      render: (value, row) => (
+      minWidth: "170px",
+      render: (_, row) => (
         <div className="flex items-center gap-2">
-          <Image
-            src="/icons/favourite.svg"
-            width={20}
-            height={20}
-            alt="token"
-          />
-          <Image
-            src={row.image}
-            className="w-6 h-6 bg-[#D9D9D9] rounded-full"
-            width={30}
-            height={30}
-            alt={"coin"}
-          />
-          <span className="text-[#00FFA3]">{value}</span>
-          <span className="text-[#A9A9A9]">{row.lastActive}</span>
+          <div className="w-[30px] h-[30px] rounded-full bg-[#3D3D3D]" />
+          <div>
+            <div>{row.name}</div>
+          </div>
         </div>
       ),
     },
     {
-      header: "UNREALIZED",
-      key: "unrealizedProfit",
-      align: "left",
-      sortable: true,
-      minWidth: "120px",
-      width: "120px",
-      render: (value, row) => (
-        <div>
-          <div>${+value.toFixed(2)}</div>
-          <div className="text-[#A9A9A9]">{row.profitPercent}%</div>
-        </div>
-      ),
-    },
-    {
-      header: "REALIZED PROFIT",
-      key: "realizedProfit",
-      align: "left",
-      sortable: true,
-      minWidth: "150px",
-      width: "150px",
-      render: (value) => <span>+${+value.toFixed(2)}</span>,
-    },
-    {
-      header: "TOTAL PROFIT",
-      key: "totalProfit",
+      header: "UNREALIZED PnL",
+      key: "pnl",
       sortable: true,
       align: "left",
       minWidth: "130px",
-      width: "130px",
       render: (value) => (
-        <span className="text-[#00FFA3]">+${+value.toFixed(2)}</span>
+        <div className="flex flex-col ">
+          <div>{parseFloat(value.pnl_percent).toFixed(3)}%</div>
+          <div className="text-[#A9A9A9] text-xs">
+            ${parseFloat(value.pnl_usd).toFixed(3)}
+          </div>
+        </div>
       ),
     },
     {
       header: "BALANCE",
-      key: "balance",
+      key: "balance_column",
       sortable: true,
       align: "left",
-      minWidth: "120px",
-      width: "120px",
+      minWidth: "130px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${+value.toFixed(2)}</span>
+        <div className="flex flex-col ">
+          <div>{parseFloat(value.balance_ui_token).toFixed(3)}</div>
+          <div className="text-[#A9A9A9] text-xs">
+            ${parseFloat(value.balance_ui_usd).toFixed(3)}
+          </div>
+        </div>
       ),
     },
     {
-      header: "BOUGHT",
-      key: "bought",
+      header: "ENTRY PRICE",
+      key: "avg_price_column",
       sortable: true,
       align: "left",
-      minWidth: "120px",
-      width: "120px",
+      minWidth: "130px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${+value.toFixed(2)}</span>
+        <div className="flex flex-col">
+          <div>{parseFloat(value.price_token).toFixed(3)}</div>
+          <div className="text-[#A9A9A9] text-xs">
+            ${parseFloat(value.price_usd).toFixed(3)}
+          </div>
+        </div>
       ),
     },
     {
-      header: "SOLD",
-      key: "sold",
+      header: "CURRENT PRICE",
+      key: "price_column",
       sortable: true,
       align: "left",
-      minWidth: "120px",
-      width: "120px",
+      minWidth: "150px",
       render: (value) => (
-        <span className="text-[#00FFA3]">${(+value).toFixed(2)}</span>
+        <div className="flex flex-col">
+          <div>{parseFloat(value.price_token).toFixed(3)}</div>
+          <div className="text-[#A9A9A9] text-xs">
+            ${parseFloat(value.price_usd).toFixed(3)}
+          </div>
+        </div>
       ),
     },
     {
       header: "",
-      key: "token",
-      align: "left",
-      minWidth: "175px",
-      width: "175px",
+      key: "mint",
+      align: "right",
+      minWidth: "130px",
       render: () => (
-        <Button className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-center font-semibold w-full gap-2.5 min-w-[150px]">
-          QUICK SELL
-        </Button>
+        <div className="flex justify-end gap-2 items-center">
+          <Image
+            src="/icons/share.svg"
+            width={25}
+            height={25}
+            alt="share"
+            className="cursor-pointer"
+          />{" "}
+          Share
+        </div>
       ),
     },
+    // {
+    //   header: "",
+    //   key: "mint",
+    //   align: "right",
+    //   minWidth: "180px",
+    //   render: (value) => (
+    //     <div className="flex justify-end gap-2 items-center">
+    //       <Button
+    //         onClick={() => onWithdraw(value)}
+    //         className="bg-linear-to-r from-[#F43500] to-[#AA1013] flex items-center justify-end font-semibold gap-2.5"
+    //       >
+    //         <span>
+    //           <Image
+    //             src="/icons/blink.svg"
+    //             alt="blink"
+    //             width={25}
+    //             height={25}
+    //           />
+    //         </span>
+    //         <span className="w-full">QUICK SELL</span>{" "}
+    //       </Button>
+    //     </div>
+    //   ),
+    // },
   ];
 
-  // Top Traders columns
   const traderColumns: Column<FormattedTrader>[] = [
     {
       header: "RANK",
@@ -672,52 +619,59 @@ export default function Transactions({
     },
   ];
 
-  // Holders columns
-  const holderColumns: Column<Holder>[] = [
+  const holderColumns: Column<TopHolder>[] = [
     {
       header: "WALLET",
-      key: "wallet",
+      key: "address",
       align: "left",
       minWidth: "150px",
       width: "150px",
       render: (value) => (
         <div className="flex items-center gap-2">
-          <span className="text-[#00C1E7]">{value}</span>
+          <span className="text-[#00C1E7]">{shortenString(value)}</span>
         </div>
       ),
     },
     {
       header: "% OWNED",
-      key: "owned",
+      key: "supply_percentage",
       align: "left",
       minWidth: "100px",
       width: "100px",
-      render: (value) => <span>{value}</span>,
+      render: (value) => <span>{Number(value).toFixed(2)}</span>,
     },
     {
       header: "AMOUNT",
-      key: "amount",
+      key: "amount_ui",
       align: "left",
       minWidth: "100px",
       width: "100px",
-      render: (value) => <span>{value}</span>,
+      render: (value) => <span>{compactNumber(+value)}</span>,
     },
-    {
-      header: "VALUE",
-      key: "value",
-      align: "left",
-      minWidth: "100px",
-      width: "100px",
-      render: (value) => <span>{value}</span>,
-    },
+    // {
+    //   header: "VALUE",
+    //   key: "",
+    //   align: "left",
+    //   minWidth: "100px",
+    //   width: "100px",
+    //   render: (value) => <span>{value}</span>,
+    // },
     {
       header: "",
-      key: "wallet",
+      key: "address",
       align: "left",
       minWidth: "60px",
       width: "60px",
-      render: () => (
-        <Image src="/icons/sort.svg" width={25} height={25} alt="menu" />
+      render: (value) => (
+        <Link href={`http://solscan.io/tx/${value}`} className="flex gap-2">
+          <Image
+            src="/icons/sort.svg"
+            width={25}
+            height={25}
+            alt="sort"
+            className="cursor-pointer"
+          />
+        </Link>
       ),
     },
   ];
@@ -746,16 +700,20 @@ export default function Transactions({
           </div>
         );
       case "holdings":
-        return (
+        return holdings.length ? (
           <Table
             data={holdings}
             columns={holdingColumns}
             className="text-[13px] max-md:text-[11px]"
             textColor="#00FFA3"
           />
+        ) : (
+          <div className="text-center py-4 text-[#A9A9A9]">
+            {loading ? "Loading..." : "No active holdings"}
+          </div>
         );
       case "traders":
-        return (
+        return topTraders.length ? (
           <Table
             data={topTraders}
             columns={traderColumns}
@@ -763,11 +721,15 @@ export default function Transactions({
             textColor="#00FFA3"
             // onSort={handleTraderSort}
           />
+        ) : (
+          <div className="text-center py-4 text-[#A9A9A9]">
+            {loading ? "Loading..." : "No active traders"}
+          </div>
         );
       case "holders":
         return (
           <Table
-            data={holders}
+            data={topHolders}
             columns={holderColumns}
             className="text-[13px] max-md:text-[11px]"
             textColor="#00FFA3"

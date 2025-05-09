@@ -8,7 +8,7 @@ import Image from "next/image";
 import Switch from "@/components/ui/Switch";
 import BuySell from "@/components/shared/Graphics/BuySell";
 import Statistics from "@/components/shared/Graphics/Statistics";
-import Transactions from "@/components/shared/Graphics/Transactions";
+import Transactions from "@/components/shared/Graphics/Transactions/Transactions";
 import { shortenString } from "@/lib/utils/shortenString";
 import Chart from "@/components/shared/Graphics/Chart";
 
@@ -178,6 +178,7 @@ export default function Graphics() {
               decimals={assetsInfo[0].decimals}
             />
             <Transactions
+              mint={assetsInfo[0].mint}
               direction={assetsInfo[0].dex_info!.dir}
               address={assetsInfo[0].dex_info!.address}
               decimals={assetsInfo[0].decimals}

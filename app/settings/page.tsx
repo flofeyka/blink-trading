@@ -60,7 +60,7 @@ export default function SettingsPage() {
       handleSettingsChange({ slippage });
     }, 1000);
 
-    return () => clearTimeout(timeout); // Сброс таймера при каждом изменении slippage
+    return () => clearTimeout(timeout);
   }, [slippage]);
 
   useLayoutEffect(() => {
