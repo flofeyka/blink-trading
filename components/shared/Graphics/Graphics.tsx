@@ -1,15 +1,15 @@
 "use client";
 
-import { AssetsClient, GetAssetsInfoResponse, TokenMetadata } from "blink-sdk";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import {AssetsClient, GetAssetsInfoResponse} from "blink-sdk";
+import {useParams} from "next/navigation";
+import {useEffect, useState} from "react";
 import Card from "@/components/ui/Card";
 import Image from "next/image";
 import Switch from "@/components/ui/Switch";
 import BuySell from "@/components/shared/Graphics/BuySell";
 import Statistics from "@/components/shared/Graphics/Statistics";
 import Transactions from "@/components/shared/Graphics/Transactions/Transactions";
-import { shortenString } from "@/lib/utils/shortenString";
+import {shortenString} from "@/lib/utils/shortenString";
 import Chart from "@/components/shared/Graphics/Chart";
 
 export default function Graphics() {
@@ -33,7 +33,7 @@ export default function Graphics() {
       setLoading(true);
       try {
         const client = AssetsClient.http(process.env.NEXT_PUBLIC_ASSETS_URL);
-        const assets_info = await client.getAssetsInfo([params.token]);
+        const assets_info = await client.getAssetsInfo([params.token], true);
 
         console.log("Token information received:", assets_info);
 

@@ -5,14 +5,14 @@ import Input from "../../ui/Input";
 import NavLink from "../../ui/NavLink";
 import BurgerMenu from "./BurgerMenu";
 import Link from "next/link";
-import Dropdown, { DropdownItem } from "@/components/ui/Dropdown";
+import Dropdown, {DropdownItem} from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
-import { userAPI } from "@/lib/api/userAPI";
-import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
-import { AssetsClient, GetAssetsInfoResponse } from "blink-sdk";
+import {userAPI} from "@/lib/api/userAPI";
+import {useEffect, useState} from "react";
+import {useParams, useSearchParams} from "next/navigation";
+import {AssetsClient, GetAssetsInfoResponse} from "blink-sdk";
 import Card from "@/components/ui/Card";
-import { shortenString } from "@/lib/utils/shortenString";
+import {shortenString} from "@/lib/utils/shortenString";
 
 export default function Header() {
   const [isLogIn, setIsLogIn] = useState<boolean>(false);
@@ -45,7 +45,7 @@ export default function Header() {
           const client: AssetsClient = AssetsClient.http(
             process.env.NEXT_PUBLIC_ASSETS_URL
           );
-          const assets_info = await client.getAssetsInfo([search]);
+          const assets_info = await client.getAssetsInfo([search], true);
 
           setAssetsInfo(assets_info);
         } catch (error) {
