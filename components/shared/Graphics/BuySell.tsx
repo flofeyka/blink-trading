@@ -271,23 +271,35 @@ export default function BuySell({ setDataMode, mint }: Props) {
                     height={35}
                     alt="cardholder"
                   />
-                  <span>
-                    <input
-                      placeholder="25%"
-                      className="border-[#716F7A] pl-2 border-2 p-2 w-full rounded-xl"
-                    />
+                  <span className="w-full">
+                    <button
+                      onClick={() => setAmount(25)}
+                      className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer w-full border-2 flex rounded-xl"
+                    >
+                      <span className="flex justify-self-center w-full">
+                        25%
+                      </span>
+                    </button>
                   </span>
-                  <span>
-                    <input
-                      placeholder="50%"
-                      className="border-[#716F7A] pl-2 border-2 p-2 w-full rounded-xl"
-                    />
+                  <span className="w-full">
+                    <button
+                      onClick={() => setAmount(50)}
+                      className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer w-full border-2 flex rounded-xl"
+                    >
+                      <span className="flex justify-self-center w-full">
+                        50%
+                      </span>
+                    </button>
                   </span>
-                  <span>
-                    <input
-                      placeholder="100%"
-                      className="border-[#716F7A] pl-2 border-2 p-2 w-full rounded-xl"
-                    />
+                  <span className="w-full">
+                    <button
+                      onClick={() => setAmount(100)}
+                      className="border-[#716F7A] h-[40px] w-full items-center px-3 gap-3 cursor-pointer w-full border-2 flex rounded-xl"
+                    >
+                      <span className="flex justify-self-center w-full">
+                        100%
+                      </span>
+                    </button>
                   </span>
                 </div>
               </div>
