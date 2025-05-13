@@ -747,7 +747,7 @@ export default function Transactions({
   };
 
   return (
-    <div className="bg-[#202020] p-2 rounded-b-md  max-md:hidden">
+    <div className="bg-[#202020] p-2 rounded-b-md h-[25%] max-md:hidden">
       {/* Tabs */}
       <div
         className="flex gap-4 border-b border-[#353535] overflow-x-auto"
